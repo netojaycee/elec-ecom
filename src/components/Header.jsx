@@ -12,13 +12,17 @@ import {
   Typography,
   IconButton,
 } from "@material-tailwind/react";
- 
-export function MobileSidebar({open, setOpen, openDrawer, closeDrawer}) {
+import { Link } from "react-router-dom";
 
- 
+export function MobileSidebar({ open, setOpen, openDrawer, closeDrawer }) {
   return (
     <React.Fragment>
-      <Drawer placement="right" open={open} onClose={closeDrawer} className="p-4">
+      <Drawer
+        placement="right"
+        open={open}
+        onClose={closeDrawer}
+        className="p-4"
+      >
         <div className="mb-6 flex items-center justify-between">
           <Typography variant="h5" color="blue-gray">
             Material Tailwind
@@ -57,7 +61,7 @@ export function MobileSidebar({open, setOpen, openDrawer, closeDrawer}) {
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
- 
+
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
   return (
@@ -82,28 +86,41 @@ export default function Header() {
             </div>
           </div>
           <div className="w-[35%] flex items-center justify-end gap-5">
-          <div className="flex items-center gap-2 text-white lg:hidden">
+            <div className="flex items-center gap-2 text-white lg:hidden">
               <BsSearch className="h-4 w-4" />
             </div>
-            <div className="flex items-center gap-2 text-white">
+            <Link to="/cart" className="flex items-center gap-2 text-white">
               <IoCart className="border border-white rounded-full h-6 w-6 p-1" />
               <span className="text-sm hidden lg:block">Cart</span>
-            </div>
-            <div className="items-center gap-2 text-white lg:flex hidden">
+            </Link>
+            <Link
+              to="/saved-items"
+              className="items-center gap-2 text-white lg:flex hidden"
+            >
               <FaHeart className="border border-white rounded-full h-6 w-6 p-1 " />{" "}
               <span className="text-sm">Saved Items</span>
-            </div>
+            </Link>
             <div className="hidden lg:flex items-center gap-2 text-white">
               <FaRegUser className="border border-white rounded-full h-6 w-6 p-1 " />{" "}
-              <span className="text-sm flex items-center gap-1">My Profile <IoIosArrowDown /></span>
+              <span className="text-sm flex items-center gap-1">
+                My Profile <IoIosArrowDown />
+              </span>
             </div>
             <div className="flex lg:hidden items-center gap-2 text-white">
-              <RiMenu3Line onClick={openDrawer} className="h-6 w-6" />
+              <RiMenu3Line
+                onClick={openDrawer}
+                className="h-6 w-6 cursor-pointer"
+              />
             </div>
           </div>
         </div>
       </div>
-      <MobileSidebar open={open} setOpen={setOpen} openDrawer={openDrawer} closeDrawer={closeDrawer} />
+      <MobileSidebar
+        open={open}
+        setOpen={setOpen}
+        openDrawer={openDrawer}
+        closeDrawer={closeDrawer}
+      />
     </>
   );
 }

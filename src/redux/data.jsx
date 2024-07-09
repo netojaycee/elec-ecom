@@ -81,7 +81,7 @@ const products = [
       "Our energy-efficient LED bulb extension provides bright and long-lasting illumination, perfect for any room. With advanced LED technology, it reduces energy consumption and lowers electricity bills.",
     category: categories[2], // Example: Lighting category
     image: productImage,
-    price: 3000,
+    price: 3900,
     tags: ["LED", "Extension"],
   },
   {
@@ -92,7 +92,7 @@ const products = [
       "Enjoy high-quality sound and voice control with our smart speaker. Connect effortlessly to your favorite music and smart home devices for an enhanced audio experience.",
     category: categories[9], // Example: Smart Home Devices category
     image: productImage,
-    price: 3000,
+    price: 1860,
     tags: ["Smart", "Speaker"],
 
   },
@@ -104,7 +104,7 @@ const products = [
       "Our versatile kitchen blender makes meal preparation a breeze. From smoothies to sauces, its powerful motor and multiple speed settings ensure optimal blending performance.",
     category: categories[4], // Example: Kitchen Appliances category
     image: productImage,
-    price: 3000,
+    price: 2200,
     tags: ["Kitchen", "Blender", "Cooking", "Vegetables"],
 
 
@@ -117,7 +117,7 @@ const products = [
       "Maintain your garden with ease using our garden trimmer. Its lightweight design and ergonomic handle provide comfort during long trimming sessions.",
     category: categories[5], // Example: Garden Tools category
     image: productImage,
-    price: 3000,
+    price: 1500,
     tags: ["Garden", "Trimmer", "Gardening", "Tools"],
 
 
@@ -130,7 +130,7 @@ const products = [
       "Complete your DIY projects efficiently with our power drill. Featuring variable speed settings and durable construction, it's ideal for various drilling tasks.",
     category: categories[6], // Example: Power Tools category
     image: productImage,
-    price: 3000,
+    price: 3100,
     tags: ["Power", "Drill", "DIY", "Projects"],
 
 
@@ -143,7 +143,7 @@ const products = [
       "Upgrade your bathroom with our stylish and functional faucet. Its sleek design and water-saving features enhance both aesthetics and efficiency.",
     category: categories[7], // Example: Bathroom Fixtures category
     image: productImage,
-    price: 3000,
+    price: 6500,
     tags: ["Bathroom", "Faucet", "Water", "Saving"],
 
 
@@ -157,7 +157,7 @@ const products = [
       "Illuminate your outdoor space with our energy-efficient solar lights. They automatically charge during the day and provide ambient lighting at night.",
     category: categories[8], // Example: Outdoor Lighting category
     image: productImage,
-    price: 3000,
+    price: 9000,
     tags: ["Outdoor", "Solar", "Lights", "Lighting"],
 
 
@@ -170,7 +170,7 @@ const products = [
       "Protect your property with our advanced security camera system. Featuring HD video quality and remote monitoring capabilities, it ensures peace of mind.",
     category: categories[9], // Example: Security Systems category
     image: productImage,
-    price: 3000,
+    price: 8000,
     tags: ["Security", "Camera", "System", "Security"],
 
 
@@ -184,7 +184,7 @@ const products = [
       "Keep your floors clean effortlessly with our robot vacuum cleaner. It navigates through rooms, detects obstacles, and offers efficient cleaning modes.",
     category: categories[10], // Example: Smart Home Devices category
     image: productImage,
-    price: 3000,
+    price: 5000,
     tags: ["Robot", "Vacuum", "Cleaner", "Cleaning"],
 
 
@@ -198,7 +198,7 @@ const products = [
       "Breathe cleaner air with our advanced air purifier. It removes airborne pollutants and allergens, creating a healthier indoor environment for you and your family.",
     category: categories[1], // Example: Home Appliances category
     image: productImage,
-    price: 3000,
+    price: 2000,
     tags: ["Air", "Purifier", "Air", "Cleaner"],
 
 

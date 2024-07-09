@@ -26,7 +26,6 @@ export function BreadCrumb() {
     "/support",
     "/error",
     "/about",
-    "/all-products",
   ];
 
   // Paths with dynamic segments (using regex)
@@ -41,6 +40,10 @@ export function BreadCrumb() {
     excludePageTitle.includes(location.pathname) ||
     dynamicExcludePatterns.some((pattern) => pattern.test(location.pathname));
 
+  const showFilter =
+    location.pathname === "/all-products" ||
+    /^\/search\/.+/.test(location.pathname) ||
+    /^\/all-categories\/.+/.test(location.pathname);
   return (
     <>
       {!excludeBreadcrumb.includes(location.pathname) && (
@@ -70,7 +73,9 @@ export function BreadCrumb() {
         </div>
       )}
       {/* page title */}
-      {!shouldExcludePageTitle && <PageTitle title={titleCaseSegment} />}
+      {!shouldExcludePageTitle && (
+        <PageTitle title={titleCaseSegment} showFilter={showFilter} />
+      )}
     </>
   );
 }

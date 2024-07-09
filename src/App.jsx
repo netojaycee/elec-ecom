@@ -42,12 +42,12 @@ function App() {
           <Route path="/all-products" element={<Products />} />
           <Route path="/all-categories/:slug" element={<Products />} />
           <Route path="/all-categories" element={<Categories />} />
-          <Route path="/all-products/search/:slug" element={<SearchPage />} />
+          <Route path="/search/:slug" element={<SearchPage />} />
           {/* user routes */}
-          <Route path="user/my-orders" element={<MyOrders />} />
-          <Route path="user/order/:slug" element={<OrderDetails />} />
-          <Route path="user/saved-items" element={<SavedItems />} />
-          <Route path="user/settings" element={<Settings />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/my-orders/:slug" element={<OrderDetails />} />
+          <Route path="/saved-items" element={<SavedItems />} />
+          <Route path="/settings" element={<Settings />} />
 
           <Route path="/error" element={<Error />} />
           <Route path="/*" element={<Navigate to="/error" />} />
