@@ -89,7 +89,7 @@ export default function Header() {
             <div className="flex items-center gap-2 text-white lg:hidden">
               <BsSearch className="h-4 w-4" />
             </div>
-            <Link to="/cart" className="flex items-center gap-2 text-white">
+            <Link to="/shopping-cart" className="flex items-center gap-2 text-white">
               <IoCart className="border border-white rounded-full h-6 w-6 p-1" />
               <span className="text-sm hidden lg:block">Cart</span>
             </Link>

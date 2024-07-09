@@ -1,7 +1,7 @@
-import { Breadcrumbs } from "@material-tailwind/react";
 import { Link, useLocation } from "react-router-dom";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "./PageTitle";
+import { Helmet } from "react-helmet";
 
 // Utility function to convert string to title case
 function toTitleCase(str) {
@@ -11,13 +11,46 @@ function toTitleCase(str) {
     .join(" ");
 }
 
+// Utility function to generate dynamic meta descriptions
+function getMetaDescription(titleSegment) {
+  switch (titleSegment) {
+    case "Home":
+      return "Welcome to Elect, your ultimate destination for the latest and greatest in electrical gadgets.";
+    case "Product":
+      return "Explore a wide range of high-quality electrical gadgets and products at Elect.";
+    case "Search":
+      return "Find the best deals on electrical gadgets with our comprehensive search functionality.";
+    case "All Products":
+      return "Browse through our extensive collection of electrical gadgets and find the perfect one for you.";
+    // Add more cases as needed
+    default:
+      return "Discover the latest in electrical gadgets and products at Elect.";
+  }
+}
+
+// Utility function to generate dynamic keywords
+function getMetaKeywords(titleSegment) {
+  switch (titleSegment) {
+    case "Home":
+      return "electrical gadgets, latest gadgets, electronics, online store";
+    case "Product":
+      return "electrical gadgets, electronics, product details, buy gadgets";
+    case "Search":
+      return "search gadgets, find gadgets, best deals, online store";
+    case "All Products":
+      return "all products, electrical gadgets, electronics, browse gadgets";
+    // Add more cases as needed
+    default:
+      return "electrical gadgets, electronics, online store, buy gadgets";
+  }
+}
+
 export function BreadCrumb() {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   const titleCasePathnames = pathnames.map((value) => toTitleCase(value));
   const lastSegment = pathnames[pathnames.length - 1];
-  const titleCaseSegment = lastSegment && toTitleCase(lastSegment);
-
+  const titleCaseSegment = lastSegment ? toTitleCase(lastSegment) : "Home";
   const excludeBreadcrumb = ["/"];
   const excludePageTitle = [
     "/",
@@ -44,8 +77,22 @@ export function BreadCrumb() {
     location.pathname === "/all-products" ||
     /^\/search\/.+/.test(location.pathname) ||
     /^\/all-categories\/.+/.test(location.pathname);
+
+  const metaDescription = getMetaDescription(titleCaseSegment);
+  const metaKeywords = getMetaKeywords(titleCaseSegment);
+
+ 
+
   return (
     <>
+      <Helmet>
+        <title>{`${titleCaseSegment} - Elect`}</title>
+        <meta name="description" content={metaDescription} />
+        <meta name="keywords" content={metaKeywords} />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Elect" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Helmet>
       {!excludeBreadcrumb.includes(location.pathname) && (
         <div className="bg-secondary rounded-b-lg py-3 2xl:py-8 px-4 lg:px-8 w-[60%] lg:w-[30%] ml-[4%]">
           <div className="flex items-center text-[#cacaca] text-[10px] lg:text-[14px]">
@@ -72,9 +119,12 @@ export function BreadCrumb() {
           </div>
         </div>
       )}
-      {/* page title */}
       {!shouldExcludePageTitle && (
-        <PageTitle title={titleCaseSegment} showFilter={showFilter} />
+        <PageTitle
+          title={titleCaseSegment}
+          showFilter={showFilter}
+        
+        />
       )}
     </>
   );

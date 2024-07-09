@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { IoCart } from "react-icons/io5";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import { FiDownload } from "react-icons/fi";
 
 const ButtonTypes = {
   NORMAL: "normal",
@@ -38,11 +40,23 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
           </span>
         ); // Cart icon
       case ButtonTypes.CONTACT:
-        return <span className="ml-2">➡️</span>; // Forward arrow icon
+        return (
+          <span className="ml-2">
+            <BsArrowRight className="h-6 w-6" />
+          </span>
+        ); // Forward arrow icon
       case ButtonTypes.BACK:
-        return <span className="mr-2">⬅️</span>; // Backward arrow icon
+        return (
+          <span className="mr-2">
+            <BsArrowLeft className="h-6 w-6" />
+          </span>
+        ); // Backward arrow icon
       case ButtonTypes.INVOICE:
-        return <span className="mr-2">📄</span>; // Download icon
+        return (
+          <span className="mr-2">
+            <FiDownload className="h-6 w-6" />
+          </span>
+        ); // Download icon
       default:
         return null;
     }
@@ -50,7 +64,9 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
 
   const buttonContent = (
     <button
-      className={`${getClassNames()} ${width ? `w-${width}` : ""} lg:w-auto px-4 py-1 lg:py-2`}
+      className={`${getClassNames()} ${
+        width ? `w-${width}` : ""
+      } lg:w-auto px-4 py-1 lg:py-2`}
       onClick={onClick}
       {...props}
     >
