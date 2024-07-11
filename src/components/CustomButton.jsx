@@ -17,15 +17,15 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
   const getClassNames = () => {
     switch (type) {
       case ButtonTypes.NORMAL:
-        return "text-white bg-green-500 rounded-md";
+        return "text-white bg-primary rounded-md";
       case ButtonTypes.CART:
-        return "text-white bg-green-500 rounded-md flex items-center justify-center";
+        return "text-white bg-primary rounded-md flex items-center justify-center";
       case ButtonTypes.CONTACT:
-        return "text-white bg-green-500 rounded-md flex items-center justify-center";
+        return "text-white bg-primary rounded-md flex items-center justify-center";
       case ButtonTypes.BACK:
         return "text-black bg-transparent flex items-center";
       case ButtonTypes.INVOICE:
-        return "text-green-500 bg-white border border-black flex items-center";
+        return "text-xs md:text-sm text-primary bg-white border border-black flex items-center";
       default:
         return "";
     }
@@ -54,7 +54,7 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
       case ButtonTypes.INVOICE:
         return (
           <span className="mr-2">
-            <FiDownload className="h-6 w-6" />
+            <FiDownload className="h-4 w-4" />
           </span>
         ); // Download icon
       default:
@@ -66,15 +66,15 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
     <button
       className={`${getClassNames()} ${
         width ? `w-${width}` : ""
-      } lg:w-auto px-4 py-1 lg:py-2`}
+      }  px-4 py-1 lg:py-2`}
       onClick={onClick}
       {...props}
     >
-      {type === ButtonTypes.BACK || type === ButtonTypes.CART
+      {type === ButtonTypes.BACK || type === ButtonTypes.CART || type ===ButtonTypes.INVOICE
         ? renderIcon()
         : null}
       {text}
-      {type === ButtonTypes.CONTACT ? renderIcon() : null}
+      {type === ButtonTypes.CONTACT  ? renderIcon() : null}
     </button>
   );
 

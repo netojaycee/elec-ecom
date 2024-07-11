@@ -11,7 +11,7 @@ export default function Footer() {
             <Link to="/">Home</Link>
             <Link to="/about">About</Link>
             <Link to="/support">Support</Link>
-            <Link to="/contact">Contact</Link>
+            <Link to="/contact-us">Contact</Link>
           </div>
           <div className="flex items-center gap-4 text-white">
             <ImInstagram />
