@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import { BsSearch } from "react-icons/bs";
 import { IoCart } from "react-icons/io5";
@@ -12,7 +12,8 @@ import {
   Typography,
   IconButton,
 } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useGetAllProductQuery } from "../redux/appData";
 
 export function MobileSidebar({ open, setOpen, openDrawer, closeDrawer }) {
   return (
@@ -61,35 +62,99 @@ export function MobileSidebar({ open, setOpen, openDrawer, closeDrawer }) {
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
+  const { data: products = [] } = useGetAllProductQuery(); // Fetch products
+
+  // Filter products based on search query
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // console.log(searchQuery);
+    navigate(`/all-products/?search=${searchQuery}`, {
+      state: { SearchResults: filteredProducts },
+    });
+
+    setSearchQuery("");
+    // Implement search logic if needed
+  };
   return (
     <>
       <div className="bg-secondary mt-3 mx-auto w-[93%] rounded-md py-3 2xl:py-10 px-7 sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center w-[65%] gap-5">
             <Logo />
-            <div className="items-center gap-2 w-[54%] hidden lg:flex">
-              <div className="relative w-full">
+            <form
+              onSubmit={handleSearch}
+              className="items-center gap-2 w-[54%] hidden lg:flex"
+            >
+              <div className="relative w-full" onSubmit={handleSearch}>
                 <input
                   type="text"
                   name="search"
                   className="p-2 pl-10 rounded-md w-full"
                   placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black" />
+
+                <BiSearch
+                  type="submit"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black"
+                />
+                {/* Display search results */}
+                {searchQuery && (
+                  <div className="bg-white  p-2 rounded shadow-lg absolute top-[50px] w-full">
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((product) => (
+                        <div
+                          key={product._id}
+                          className="p-2 border-b border-gray-200"
+                        >
+                          <div
+                            onClick={() => {
+                              navigate(
+                                `/all-products/?search=${product.name}`,
+                                {
+                                  state: { SearchResults: filteredProducts },
+                                }
+                              );
+                              setSearchQuery("");
+                            }}
+                          >
+                            {product.name}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="p-2">No products found.</div>
+                    )}
+                  </div>
+                )}
               </div>
-              <button className="bg-primary px-4 py-2 rounded-md text-white">
+
+              <button
+                type="submit"
+                className="bg-primary px-4 py-2 rounded-md text-white"
+              >
                 Search
               </button>
-            </div>
+            </form>
           </div>
           <div className="w-[35%] flex items-center justify-end gap-5">
             <div className="flex items-center gap-2 text-white lg:hidden">
               <BsSearch className="h-4 w-4" />
             </div>
-            <Link to="/shopping-cart" className="flex items-center gap-2 text-white">
+            <Link
+              to="/shopping-cart"
+              className="flex items-center gap-2 text-white"
+            >
               <IoCart className="border border-white rounded-full h-6 w-6 p-1" />
               <span className="text-sm hidden lg:block">Cart</span>
             </Link>

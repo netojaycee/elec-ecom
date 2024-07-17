@@ -73,15 +73,16 @@ export function BreadCrumb() {
     excludePageTitle.includes(location.pathname) ||
     dynamicExcludePatterns.some((pattern) => pattern.test(location.pathname));
 
+  const searchParams = new URLSearchParams(location.search);
+  const isSearch = searchParams.get("search");
+
   const showFilter =
     location.pathname === "/all-products" ||
-    /^\/search\/.+/.test(location.pathname) ||
-    /^\/all-categories\/.+/.test(location.pathname);
+    /^\/all-categories\/.+/.test(location.pathname) ||
+    isSearch;
 
   const metaDescription = getMetaDescription(titleCaseSegment);
   const metaKeywords = getMetaKeywords(titleCaseSegment);
-
- 
 
   return (
     <>
@@ -101,13 +102,14 @@ export function BreadCrumb() {
             </Link>
             {titleCasePathnames.map((value, index) => {
               const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+              
               const isLast = index === titleCasePathnames.length - 1;
 
               return (
                 <React.Fragment key={to}>
                   <span className="mx-2">/</span>
                   {isLast ? (
-                    <span>{value}</span>
+                    <span>{isSearch ? `search for ${isSearch}` : value}</span>
                   ) : (
                     <Link to={to} className="opacity-60">
                       {value}
@@ -120,11 +122,7 @@ export function BreadCrumb() {
         </div>
       )}
       {!shouldExcludePageTitle && (
-        <PageTitle
-          title={titleCaseSegment}
-          showFilter={showFilter}
-        
-        />
+        <PageTitle title={isSearch ? "showing search results" : titleCaseSegment} showFilter={showFilter} />
       )}
     </>
   );
