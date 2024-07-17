@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import SortContext from "../hooks/SortContext";
-import products, { categories } from "../redux/data";
+import { categories } from "../redux/data";
 import ProductCard from "../components/ProductCard";
 import { Link } from "react-router-dom";
 import Pagination from "../components/Pagination"; // Ensure you have a Pagination component
@@ -13,6 +13,7 @@ import {
 } from "@material-tailwind/react";
 import cancel from "@/assets/images/cancel.png";
 import CustomButton from "../components/CustomButton";
+import { useGetAllProductQuery } from "../redux/appData";
 
 export function MobileFilter({ open, handleOpen }) {
   return (
@@ -71,6 +72,8 @@ export default function Products() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+  const { data: products } = useGetAllProductQuery();
+
 
   useEffect(() => {
     const sortedProducts = [...products].sort((a, b) => {

@@ -58,14 +58,14 @@ export default function OrderDetails() {
                   <p className="font-bold mb-2 2xl:text-2xl"> Payment Information</p>
                   <p className="2xl:text-xl">
                     Items Total Amount:
-                    <span className="font-bold">N1,500</span>
+                    <span className="font-bold"><span className="font-serif">&#8358;</span>1,500</span>
                   </p>
                   <p className="2xl:text-xl">
-                    Delivery Fee: <span className="font-bold">N800</span>
+                    Delivery Fee: <span className="font-bold"><span className="font-serif">&#8358;</span>800</span>
                   </p>
                   <hr className="w-[90%] mx-auto border my-2" />
                   <p className="2xl:text-xl">
-                    Total:<span className="font-bold text-2xl">{" "}N2, 300</span>
+                    Total:<span className="font-bold text-2xl"><span className="font-serif">&#8358;</span>2, 300</span>
                   </p>
                 </div>
                 <div className="w-full md:w-1/2  border rounded-md p-3 h-full">

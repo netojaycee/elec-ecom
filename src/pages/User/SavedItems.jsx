@@ -38,10 +38,10 @@ export default function SavedItems() {
                     </div>
                   </div>
                   <p className="text-sm font-bold hidden items-center w-[40%] md:flex justify-center">
-                    #1500
+                   <span className="font-serif">&#8358;</span>1500
                   </p>
                   <p className="text-sm font-bold  md:hidden justify-center">
-                    #6000
+                   <span className="font-serif">&#8358;</span>6000
                   </p>
                 </div>
                 <div className="flex items-center md:w-[60%] w-full justify-between md:justify-end">

@@ -25,8 +25,13 @@ import AdminLayout from "./components/AdminLayout";
 import "../node_modules/slick-carousel/slick/slick.css";
 import "../node_modules/slick-carousel/slick/slick-theme.css";
 import Categories from "./pages/Categories";
+import { useSelector } from "react-redux";
+import Protected from "./components/Protected";
 
 function App() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAdmin = useSelector((state) => state.auth.isAdmin);
+
   return (
     <>
       <Routes>
@@ -44,18 +49,22 @@ function App() {
           <Route path="/all-categories" element={<Categories />} />
           <Route path="/search/:slug" element={<SearchPage />} />
           {/* user routes */}
-          <Route path="/my-orders" element={<MyOrders />} />
-          <Route path="/my-orders/:slug" element={<OrderDetails />} />
-          <Route path="/saved-items" element={<SavedItems />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/" element={<Protected />}>
+            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path="/my-orders/:slug" element={<OrderDetails />} />
+            <Route path="/saved-items" element={<SavedItems />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
 
           <Route path="/error" element={<Error />} />
           <Route path="/*" element={<Navigate to="/error" />} />
         </Route>
         {/* admin routes */}
         <Route path="/admin/" element={<AdminLayout />}></Route>
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/forgot-password" element={<ForgotPass />} />
+        <Route
+          path="/auth"
+          element={isAuthenticated ? <Navigate to="/" /> : <Auth />}
+        />
         <Route path="/reset-password/:token" element={<ResetPass />} />
       </Routes>
       <ToastContainer

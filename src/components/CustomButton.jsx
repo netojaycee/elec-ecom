@@ -65,7 +65,7 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
   const buttonContent = (
     <button
       className={`${getClassNames()} ${
-        width ? `w-${width}` : ""
+        width ? `w-${width} lg:w-auto` : ""
       }  px-4 py-1 lg:py-2`}
       onClick={onClick}
       {...props}

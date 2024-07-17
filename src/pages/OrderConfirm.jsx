@@ -75,16 +75,16 @@ export default function OrderConfirm() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>N6,000</span>
+                <span><span className="font-serif">&#8358;</span>6,000</span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
-                <span>N800</span>
+                <span><span className="font-serif">&#8358;</span>800</span>
               </div>
               <hr className="w-[90%] mx-auto border my-2" />
               <div className="flex justify-between font-bold">
                 <span>Total</span>
-                <span>N6,800</span>
+                <span><span className="font-serif">&#8358;</span>6,800</span>
               </div>
             </div>
           </div>

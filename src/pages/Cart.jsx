@@ -40,10 +40,10 @@ export default function Cart() {
                     </div>
                   </div>
                   <p className="text-sm font-bold hidden items-center w-[40%] md:flex justify-center">
-                    #1500
+                    <span className="font-serif">&#8358;</span>1500
                   </p>
                   <p className="text-sm font-bold  md:hidden justify-center">
-                    #6000
+                    <span className="font-serif">&#8358;</span>6000
                   </p>
                 </div>
                 <div className="flex items-center md:w-[60%] w-full justify-between md:justify-end">
@@ -55,7 +55,7 @@ export default function Cart() {
                     </div>
                   </div>
                   <p className="text-sm font-bold  hidden md:w-[38%] md:flex justify-center order-1 md:order-2">
-                    #6000
+                    <span className="font-serif">&#8358;</span>6000
                   </p>
                   <div className=" text-red-500 text-sm font-normal md:w-[20%] flex justify-center order-1 md:order-3 items-center">
                     <BiTrashAlt className=" w-6 h-6" />
@@ -66,7 +66,7 @@ export default function Cart() {
             </div>
             <div className="flex items-center w-full md:hidden justify-between mt-4 border border-gray-300 p-4 rounded-md">
               <p className="text-sm font-normal w-[40%]">SubTotal: </p>
-              <p className="text-sm font-bold  flex justify-center">#6000</p>
+              <p className="text-sm font-bold  flex justify-center"><span className="font-serif">&#8358;</span>6000</p>
             </div>
 
             <div className="flex items-center w-full justify-between mt-4">
