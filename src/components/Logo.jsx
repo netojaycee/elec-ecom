@@ -1,16 +1,13 @@
 import React from "react";
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo-f.png";
 
 export default function Logo() {
   return (
-    <div className="w-[25%] flex justify-center">
-      {/* <span className="rounded-full py-2 px-3 bg-blue-gray-600 text-white text-center ">
-        L
-      </span> */}
+    <div className="w-[30%] h-[60px] flex justify-center items-center">
       <img
         src={logo}
-        alt=""
-        className="lg:w-[170px] lg:h-[60px] object-contain"
+        alt="Logo"
+        className="h-full object-cover w-full"
       />
     </div>
   );

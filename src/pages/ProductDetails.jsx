@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import productImage from "@/assets/images/product1.png";
 import PageTitle from "@/components/PageTitle";
@@ -69,40 +69,57 @@ export default function ProductDetails() {
   const { data: products } = useGetAllProductQuery();
   const { slug } = useParams();
 
-  const product = products?.find(
-    (product) => slugify(product.name, { lower: true }) === slug
-  );
+  const images = [productImage, productImage, productImage];
 
+  const product =
+    products &&
+    products?.find(
+      (product) => slugify(product.name, { lower: true }) === slug
+    );
+
+  const [mainImage, setMainImage] = useState(images[0]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const handleImageClick = (image, index) => {
+    setMainImage(image);
+    setSelectedIndex(index);
+  };
   return (
     <>
       <div className="flex flex-col gap-5">
-        <div className="flex gap-10">
-          <div className="w-1/2 ">
-            {/* <Carousel
-        showArrows={false}
-            showThumbs={true}
-              infiniteLoop
-              emulateTouch
-              swipeable
-              thumbWidth={180}
-              showStatus={false}
-              width={500}
-            >
-              <div className="bg-white shadow-md">
-                <img src={productImage} className="" />
+        <div className="flex flex-col lg:flex-row gap-10">
+          <div className="w-full lg:w-1/2">
+            <div className="flex flex-col gap-3 w-full">
+              <div className="bg-white min-h-4 shadow-md p-3 h-[250px] rounded-md">
+                <img
+                  src={mainImage}
+                  alt="Main"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <div className="bg-white shadow-md ">
-                <img src={productImage} />
+              <div className="flex items-center gap-3 w-full">
+                {images.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`bg-white min-h-4 shadow-md p-3 w-1/3 h-[120px] cursor-pointer transition-all duration-300 ease-in-out rounded-md ${
+                      selectedIndex === index ? "border-2 border-primary" : ""
+                    }`}
+                    onClick={() => handleImageClick(image, index)}
+                  >
+                    <img
+                      src={image}
+                      alt={`Thumbnail ${index}`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ))}
               </div>
-              <div className="bg-white shadow-md ">
-                <img src={productImage} />
-              </div>
-              
-            </Carousel> */}
-            carousel
+            </div>
           </div>
-          <div className="flex flex-col gap-3 w-1/2">
-            <h1 className="font-semibold text-lg lg:text-2xl">{product.name}</h1>
+          <div className="flex flex-col gap-3 w-full lg:w-1/2">
+            <h1 className="font-semibold text-lg lg:text-2xl">
+              {product.name}
+            </h1>
             <p className="font-bold text-2xl">
               <span className="font-serif">&#8358;</span>
               {product.price}

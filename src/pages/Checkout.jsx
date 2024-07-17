@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Checkout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const cartData = location.state?.cartData;
+  const totalAmount = location.state?.totalAmount;
+  const deliveryFee = 800;
+
+  // Redirect to the cart page if no cart data is found
+  useEffect(() => {
+    if (!cartData || !totalAmount) {
+      navigate("/shopping-cart");
+    }
+    // Ensure to return a cleanup function
+    return () => {
+      // Perform any cleanup here if needed
+    };
+  }, [cartData, totalAmount, navigate]); // Include navigate as a dependency
+
+
+  // console.log(cartData);
+  // console.log(totalAmount);
   return (
     <div className="flex justify-center items-start min-h-screen py-8 px-4">
       <div className="flex flex-col md:flex-row w-full  gap-10">
@@ -55,21 +76,32 @@ export default function Checkout() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span><span className="font-serif">&#8358;</span>6,000</span>
+                <span>
+                  <span className="font-serif">&#8358; </span>{totalAmount}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
-                <span><span className="font-serif">&#8358;</span>800</span>
+                <span>
+                  <span className="font-serif">&#8358; </span>{deliveryFee}
+                </span>
               </div>
               <hr className="w-[90%] mx-auto border my-2" />
 
               <div className="flex justify-between font-bold">
                 <span>Total</span>
-                <span><span className="font-serif">&#8358;</span>6,800</span>
+                <span>
+                  <span className="font-serif">&#8358; </span>{totalAmount + deliveryFee}
+                </span>
               </div>
             </div>
           </div>
-          <CustomButton type={"normal"} text={"Pay Now"} onClick="" width="full" />
+          <CustomButton
+            type={"normal"}
+            text={"Pay Now"}
+            onClick=""
+            width="full"
+          />
         </div>
       </div>
     </div>
