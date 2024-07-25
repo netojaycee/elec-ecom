@@ -13,7 +13,7 @@ const ButtonTypes = {
   INVOICE: "invoice",
 };
 
-const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
+const CustomButton = ({ type, text, width, onClick, Icon, to, ...props }) => {
   const getClassNames = () => {
     switch (type) {
       case ButtonTypes.NORMAL:
@@ -42,7 +42,7 @@ const CustomButton = ({ type, text, width, onClick, to, ...props }) => {
       case ButtonTypes.CONTACT:
         return (
           <span className="ml-2">
-            <BsArrowRight className="h-6 w-6" />
+            <Icon className="h-4 w-4" />
           </span>
         ); // Forward arrow icon
       case ButtonTypes.BACK:

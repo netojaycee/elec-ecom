@@ -11,6 +11,7 @@ const CustomInput = ({
   type,
   width,
   textarea,
+  options,
   ...props
 }) => {
   const [inputType, setInputType] = useState(type);
@@ -39,6 +40,20 @@ const CustomInput = ({
             className="block w-full pl-4 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             {...props}
           />
+        ) : type === "select" ? (
+          <select
+            name={name}
+            value={value}
+            onChange={onChange}
+            className="block w-full pl-4 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            {...props}
+          >
+            {options && options.map((option, index) => (
+              <option key={index} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         ) : (
           <input
             type={inputType}
@@ -73,6 +88,12 @@ CustomInput.propTypes = {
   type: PropTypes.string,
   width: PropTypes.string,
   textarea: PropTypes.bool,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired
+    })
+  )
 };
 
 CustomInput.defaultProps = {
@@ -81,6 +102,7 @@ CustomInput.defaultProps = {
   type: "text",
   width: "",
   textarea: false,
+  options: []
 };
 
 export default CustomInput;

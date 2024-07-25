@@ -2,6 +2,7 @@ import React from "react";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import contactImage from "@/assets/images/contact.png";
+import { BsArrowRight } from "react-icons/bs";
 
 export default function Contact() {
   return (
@@ -50,10 +51,13 @@ export default function Contact() {
               text="Send Message"
               onClick=""
               width=""
+              Icon={BsArrowRight}
             />
           </form>
         </div>
       </div>
+
     </div>
+
   );
 }

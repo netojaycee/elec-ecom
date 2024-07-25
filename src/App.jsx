@@ -21,12 +21,19 @@ import MyOrders from "./pages/User/MyOrders";
 import OrderDetails from "./pages/User/OrderDetails";
 import SavedItems from "./pages/User/SavedItems";
 import Settings from "./pages/User/Settings";
-import AdminLayout from "./components/AdminLayout";
+import AdminLayout from "./components/Admin/AdminLayout";
 import "../node_modules/slick-carousel/slick/slick.css";
 import "../node_modules/slick-carousel/slick/slick-theme.css";
 import Categories from "./pages/Categories";
 import { useSelector } from "react-redux";
 import Protected from "./components/Protected";
+import Dashboard from "./pages/Admin/Dashboard";
+import AddProduct from "./pages/Admin/Products/AddProduct";
+import AllProducts from "./pages/Admin/Products/AllProducts";
+import AllCategory from "./pages/Admin/Category/AllCategory";
+import AddCategory from "./pages/Admin/Category/AddCategory";
+import OrderDetailsAdmin from "./pages/Admin/Orders/OrderDetailsAdmin";
+import AllOrders from "./pages/Admin/Orders/AllOrders";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -60,7 +67,15 @@ function App() {
           <Route path="/*" element={<Navigate to="/error" />} />
         </Route>
         {/* admin routes */}
-        <Route path="/admin/" element={<AdminLayout />}></Route>
+        <Route path="admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="all-product" element={<AllProducts />} />
+          <Route path="add-product" element={<AddProduct />} />
+          <Route path="all-category" element={<AllCategory />} />
+          <Route path="add-category" element={<AddCategory />} />
+          <Route path="all-order" element={<AllOrders />} />
+          <Route path="order-detail" element={<OrderDetailsAdmin />} />
+        </Route>
         <Route
           path="/auth"
           element={isAuthenticated ? <Navigate to="/" /> : <Auth />}

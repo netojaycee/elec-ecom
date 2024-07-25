@@ -74,11 +74,11 @@ export default function Cart() {
                       </div>
                     </div>
                     <p className="text-sm font-bold hidden items-center w-[40%] md:flex justify-center">
-                      <span className="font-serif">&#8358; </span>$
+                      <span className="font-serif">&#8358; </span>
                       {cartItem.price}
                     </p>
                     <p className="text-sm font-bold  md:hidden justify-center">
-                      <span className="font-serif">&#8358; </span>$
+                      <span className="font-serif">&#8358; </span>
                       {cartItem.price * cartItem.cartQuantity}
                     </p>
                   </div>
@@ -97,7 +97,7 @@ export default function Cart() {
                       </div>
                     </div>
                     <p className="text-sm font-bold  hidden md:w-[38%] md:flex justify-center order-1 md:order-2">
-                      <span className="font-serif">&#8358;</span>$
+                      <span className="font-serif">&#8358;</span>
                       {cartItem.price * cartItem.cartQuantity}
                     </p>
                     <div className=" text-red-500 text-sm font-normal md:w-[20%] flex justify-center order-1 md:order-3 items-center">
@@ -114,7 +114,7 @@ export default function Cart() {
             <div className="flex items-center w-full md:hidden justify-between mt-4 border border-gray-300 p-4 rounded-md">
               <p className="text-sm font-normal w-[40%]">SubTotal: </p>
               <p className="text-sm font-bold  flex justify-center">
-                <span className="font-serif">&#8358;</span>$
+                <span className="font-serif">&#8358;</span>
                 {cart.cartTotalAmount}
               </p>
             </div>

@@ -122,41 +122,39 @@ export default function Products() {
 
   return (
     <>
-      {isSearch && searchResults.length > 0 ? (
-        <>
-          <div className="w-full flex gap-5 items-start">
-            <FilterBar specialClass={"hidden lg:flex w-1/4"} />
-            <div className="w-full lg:w-3/4 flex flex-col gap-5 items-start">
-              <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2 p-2">
-                {currentProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-              {filteredProducts.length > itemsPerPage && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(filteredProducts.length / itemsPerPage)}
-                  onPageChange={handlePageChange}
-                />
-              )}
+      <>
+        <div className="w-full flex gap-5 items-start">
+          <FilterBar specialClass={"hidden lg:flex w-1/4"} />
+          <div className="w-full lg:w-3/4 flex flex-col gap-5 items-start">
+            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2 p-2">
+              {currentProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
             </div>
+            {filteredProducts.length > itemsPerPage && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredProducts.length / itemsPerPage)}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
-          <MobileFilter handleOpen={handleOpen} open={open} />
-        </>
-      ) : (
-        <>
+        </div>
+        <MobileFilter handleOpen={handleOpen} open={open} />
+      </>
+      <>
+        {isSearch && searchResults.length === 0 && (
           <div className="flex flex-col items-center justify-center">
             <img src={nosearch} alt="" className="lg:w-[15%]" />
-            <h2 className=" md:text-lg lg:text-xl font-bold mt-2">
+            <h2 className="md:text-lg lg:text-xl font-bold mt-2">
               Ooops! We couldn’t find what you were looking for
             </h2>
             <p className="text-center md:text-sm lg:text-lg font-normal mt-2">
               Try searching for something else...
             </p>
-            
           </div>
-        </>
-      )}
+        )}
+      </>
     </>
   );
 }
