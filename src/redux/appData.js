@@ -36,19 +36,32 @@ export const productsApi = createApi({
     getAllProduct: builder.query({
       query: () => "/products",
     }),
+    getAllCategory: builder.query({
+      query: () => "/categories",
+    }),
     //     getOneProduct: builder.query({
     //       query: (id) => `products/${id}`,
     //     }),
-    //     addProduct: builder.mutation({
-    //       query: (newProduct) => ({
-    //         url: `products/add`,
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: newProduct,
-    //       }),
-    //     }),
+        addCategory: builder.mutation({
+          query: (newCategory) => ({
+            url: "/categories",
+            method: "POST",
+            
+            body: newCategory,
+          }),
+
+          onQueryStarted: async (arg, { queryFulfilled }) => {
+            try {
+              // console.log("registered");
+              await queryFulfilled;
+    
+             
+             
+            } catch (err) {
+              console.error("category add failed:", err);
+            }
+          },
+        }),
     //     updateProduct: builder.mutation({
     //       query: ({ id, updatedProduct }) => ({
     //         url: `products/${id}`,
@@ -276,6 +289,8 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useGetAllProductQuery,
+  useGetAllCategoryQuery,
+  useAddCategoryMutation,
   // useLogoutMutation,
   // useGenerateAiClinicalNoteMutation,
   // useAddNoteMutation,

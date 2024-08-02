@@ -3,11 +3,12 @@ import CustomButton from "@/components/CustomButton";
 import { BiPlus } from "react-icons/bi";
 import { HiDotsVertical } from "react-icons/hi";
 import Pagination from "../../../components/Pagination";
+import { useGetAllCategoryQuery } from "../../../redux/appData";
 
 export default function AllCategory() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
-  const category = Array(20).fill(0);
+  const { data: category = [] } = useGetAllCategoryQuery();
 
   const indexOfLastCategory = currentPage * itemsPerPage;
   const indexOfFirstCategory = indexOfLastCategory - itemsPerPage;
@@ -26,16 +27,13 @@ export default function AllCategory() {
         <CustomButton
           type="contact"
           text="Add New Category"
-          onClick={() => console.log("Add New Category Clicked")
-
-          }
           to="/admin/add-category"
           width=""
           Icon={BiPlus}
         />
       </div>
       <div className="overflow-x-auto">
-        <div className="min-w-[800px]">
+      <div className="min-w-[600px]">
           <div className="flex items-center w-full px-4 py-2 bg-white rounded-lg mb-4">
             <p className="text-xs font-normal w-[15%]"> Category ID</p>
             <p className="text-xs font-normal w-[26%]">Category Name</p>
@@ -54,10 +52,10 @@ export default function AllCategory() {
                   00{indexOfFirstCategory + index + 1}
                 </p>
                 <p className="text-sm font-normal w-[26%]">Lighting</p>
-          
+
                 <p className="text-sm font-normal w-[13%]">100</p>
                 <p className="text-sm font-normal w-[11%]">2024-06-01</p>
-                
+
                 <p className="text-sm font-normal w-[35%] flex justify-end">
                   <HiDotsVertical className="w-6 h-6 " />
                 </p>
@@ -69,17 +67,22 @@ export default function AllCategory() {
 
       <div className="flex justify-between items-center mt-4">
         <p>
-          Showing {indexOfFirstCategory + 1} to{" "}
-          {Math.min(indexOfLastCategory, category.length)} of {category.length}{" "}
-          category
+          Showing{" "}
+          {indexOfFirstCategory > category.length
+            ? category.length
+            : indexOfFirstCategory + 1}{" "}
+          to {Math.min(indexOfLastCategory, category.length)} of{" "}
+          {category.length} category
         </p>
-        <div className="">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(category.length / itemsPerPage)}
-            onPageChange={handlePageChange}
-          />
-        </div>
+        {category.length > itemsPerPage && (
+          <div className="">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(category.length / itemsPerPage)}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
       </div>
     </>
   );

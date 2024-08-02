@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import CategoryCard from "../../components/CategoryCard";
 import Slider from "react-slick";
-import { categories } from "../../redux/data";
+import { useGetAllCategoryQuery } from "../../redux/appData";
 
 export default function Categories() {
+  const { data: categories } = useGetAllCategoryQuery();
+
   var settings = {
     dots: false,
     infinite: true,
@@ -65,9 +67,10 @@ export default function Categories() {
 
       <div className="slider-container lg:px-2 px-5">
         <Slider {...settings}>
-          {categories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
-          ))}
+          {categories &&
+            categories.map((category) => (
+              <CategoryCard key={category.id} category={category} />
+            ))}
         </Slider>
       </div>
     </>

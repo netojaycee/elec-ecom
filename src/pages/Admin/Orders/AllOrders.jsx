@@ -23,7 +23,7 @@ export default function AllOrders() {
   
 
       <div className="overflow-x-auto">
-        <div className="min-w-[800px]">
+      <div className="min-w-[600px]">
           <div className="flex items-center w-full px-4 py-2 bg-white rounded-lg mb-4">
             <p className="text-xs font-normal w-[10%]"> Order ID</p>
             <p className="text-xs font-normal w-[20%]">Customer Name</p>
