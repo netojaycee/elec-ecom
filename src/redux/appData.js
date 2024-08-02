@@ -43,11 +43,10 @@ export const productsApi = createApi({
     //       query: (id) => `products/${id}`,
     //     }),
         addCategory: builder.mutation({
-          query: (newCategory) => ({
+          query: (credentials) => ({
             url: "/categories",
             method: "POST",
-            
-            body: newCategory,
+            body: credentials,
           }),
 
           onQueryStarted: async (arg, { queryFulfilled }) => {
