@@ -6,6 +6,8 @@ import { useGetAllCategoryQuery } from "../redux/appData";
 export default function Categories() {
   const { data: categories } = useGetAllCategoryQuery();
 
+  console.log("cate", categories)
+
   return (
     <>
       {/* <div className="bg-background_bl text-white p-4 flex items-center justify-between">

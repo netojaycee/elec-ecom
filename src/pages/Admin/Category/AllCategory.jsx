@@ -35,7 +35,7 @@ export default function AllCategory() {
       <div className="overflow-x-auto">
       <div className="min-w-[600px]">
           <div className="flex items-center w-full px-4 py-2 bg-white rounded-lg mb-4">
-            <p className="text-xs font-normal w-[15%]"> Category ID</p>
+            <p className="text-xs font-normal w-[15%]"> s/n</p>
             <p className="text-xs font-normal w-[26%]">Category Name</p>
 
             <p className="text-xs font-normal w-[13%]">Items</p>
@@ -51,10 +51,10 @@ export default function AllCategory() {
                 <p className="text-sm font-normal w-[15%]">
                   00{indexOfFirstCategory + index + 1}
                 </p>
-                <p className="text-sm font-normal w-[26%]">Lighting</p>
+                <p className="text-sm font-normal w-[26%]">{_.name}</p>
 
-                <p className="text-sm font-normal w-[13%]">100</p>
-                <p className="text-sm font-normal w-[11%]">2024-06-01</p>
+                {/* <p className="text-sm font-normal w-[13%]">100</p> */}
+                <p className="text-sm font-normal w-[11%]">{_.createdAt}</p>
 
                 <p className="text-sm font-normal w-[35%] flex justify-end">
                   <HiDotsVertical className="w-6 h-6 " />
