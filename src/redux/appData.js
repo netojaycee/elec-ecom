@@ -8,8 +8,8 @@ import { setUserInfo } from "./slices/userSlice";
 import { jwtDecode } from "jwt-decode";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/",
-  // baseUrl: "https://powermart.onrender.com/api/",
+  // baseUrl: "http://localhost:5000/api/",
+  baseUrl: "https://powermart.onrender.com/api/",
   prepareHeaders: (headers, { getState }) => {
     headers.set("Content-Type", "application/json");
     const token = getState().auth.token;
