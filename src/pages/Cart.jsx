@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import productImage from "@/assets/images/product1.png";
 import nocart from "@/assets/images/nocart.png";
 import { BiTrashAlt } from "react-icons/bi";
-import CustomButton from "../components/CustomButton";
+import CustomButton from "@/components/CustomButton";
 import { PiMinusCircleFill, PiPlusCircleFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import {
   removeFromCart,
 } from "../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { BsArrowRight } from "react-icons/bs";
 
 export default function Cart() {
   const cart = useSelector((state) => state.cart);
@@ -38,7 +39,9 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    navigate("/checkout", { state: { cartData: cart.cartItems, totalAmount: cart.cartTotalAmount } });
+    navigate("/checkout", {
+      state: { cartData: cart.cartItems, totalAmount: cart.cartTotalAmount },
+    });
   };
 
   return (
@@ -60,7 +63,7 @@ export default function Cart() {
                   <div className="flex md:w-[60%] w-full justify-between md:justify-start items-center">
                     <div className="text-sm font-normal flex items-center gap-4 lg:gap-10 w-full">
                       <img
-                        src={cartItem.image.secure_url}
+                        src={cartItem.images[0]}
                         alt=""
                         className="w-[100px] h-[80px] bg-gray-300 rounded-md"
                       />
@@ -144,6 +147,7 @@ export default function Cart() {
               type={"contact"}
               text="Continue Shopping"
               to={"/all-products"}
+              Icon={BsArrowRight}
             />
           </div>
         </>

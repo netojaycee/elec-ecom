@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Range } from "react-range";
 import SortContext from "../hooks/SortContext";
-import { categories } from "../redux/data";
 import ProductCard from "../components/ProductCard";
-import { Link, useLocation } from "react-router-dom";
-import Pagination from "../components/Pagination"; // Ensure you have a Pagination component
+import { Link, useLocation, useParams } from "react-router-dom";
+import Pagination from "../components/Pagination";
 import {
   Button,
   Dialog,
@@ -13,7 +13,7 @@ import {
 } from "@material-tailwind/react";
 import cancel from "@/assets/images/cancel.png";
 import CustomButton from "../components/CustomButton";
-import { useGetAllProductQuery } from "../redux/appData";
+import { useGetAllCategoryQuery, useGetAllProductQuery } from "@/redux/appData";
 import nosearch from "@/assets/images/nosearch.png";
 
 export function MobileFilter({ open, handleOpen }) {
@@ -44,7 +44,78 @@ export function MobileFilter({ open, handleOpen }) {
   );
 }
 
-function FilterBar({ specialClass, handleOpen }) {
+const SuperSimple = ({ values, setValues }) => {
+  if (!values) {
+    return null; // or return some fallback UI
+  }
+  return (
+    <div style={{ width: "90%", margin: "0 auto" }}>
+      <Range
+        step={1}
+        min={0}
+        max={999999}
+        values={values}
+        onChange={(values) => setValues(values)}
+        renderTrack={({ props, children }) => (
+          <div
+            {...props}
+            style={{
+              ...props.style,
+              height: "6px",
+              width: "100%",
+              backgroundColor: "#ccc",
+            }}
+          >
+            {children}
+          </div>
+        )}
+        renderThumb={({ props }) => (
+          <div
+            {...props}
+            key={props.key}
+            style={{
+              ...props.style,
+              height: "15px",
+              width: "15px",
+              backgroundColor: "#000",
+            }}
+          />
+        )}
+      />
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <input
+          type="number"
+          value={values[0]}
+          readOnly
+          style={{
+            backgroundColor: "#000",
+            width: "80px",
+            textAlign: "center",
+            marginLeft: "5px",
+            color: "#fff",
+          }}
+        />
+        <span> -- </span>
+        <input
+          type="number"
+          value={values[1]}
+          readOnly
+          style={{
+            backgroundColor: "#000",
+            width: "80px",
+            textAlign: "center",
+            marginLeft: "5px",
+            color: "#fff",
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+function FilterBar({ specialClass, handleOpen, priceRange, setPriceRange }) {
+  const { data: categories = [] } = useGetAllCategoryQuery();
+
   return (
     <>
       <div className={` ${specialClass} flex-col gap-5 items-start p-2`}>
@@ -55,13 +126,13 @@ function FilterBar({ specialClass, handleOpen }) {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-col gap-1 w-full">
             {categories.map((category) => (
               <Link
-                onClick={handleOpen}
-                key={category.id}
+                onClick={window.innerWidth < 768 ? handleOpen : null}
+                key={category._id}
                 to={`/all-categories/${category.slug}`}
                 className="flex gap-2 p-2 cursor-pointer duration-300 transform hover:scale-95 transition ease-linear"
               >
                 <span className="border border-black rounded p-1 lg:px-[11px] lg:py-[5px]"></span>
-                <p className="text-[8px] lg:text-lg">{category.title}</p>
+                <p className="text-[8px] lg:text-lg">{category.name}</p>
               </Link>
             ))}
           </div>
@@ -71,7 +142,9 @@ function FilterBar({ specialClass, handleOpen }) {
           <h1 className="text-[10px] lg:text-lg font-bold uppercase">
             Filter By Price
           </h1>
-          <div className="flex flex-col gap-2 w-full">price filter</div>
+          <div className="flex flex-col gap-2 w-full">
+            <SuperSimple values={priceRange} setValues={setPriceRange} />
+          </div>
         </div>
       </div>
     </>
@@ -84,15 +157,30 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const { data: products = [] } = useGetAllProductQuery();
+  const [priceRange, setPriceRange] = useState([300, 300000]); // Price range state
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const isSearch = searchParams.get("search");
   const searchResults = location.state?.SearchResults || [];
+  const { slug } = useParams(); // Get the category slug from the URL
 
   useEffect(() => {
-    // Determine the products to use: search results or all products
-    const productsToUse =
-      isSearch && searchResults.length > 0 ? searchResults : products;
+    // Determine the products to use: search results, all products, or filtered by category
+    let productsToUse = products;
+
+    if (slug) {
+      productsToUse = products
+        .slice(0, 34)
+        .filter((product) => product.category.slug === slug);
+    } else if (isSearch && searchResults.length > 0) {
+      productsToUse = searchResults; // Use search results if available
+    }
+
+    // Filter by price range
+    productsToUse = productsToUse.filter(
+      (product) =>
+        product.price >= priceRange[0] && product.price <= priceRange[1]
+    );
 
     const sortedProducts = [...productsToUse].sort((a, b) => {
       if (sortValue === "lowest") {
@@ -106,7 +194,7 @@ export default function Products() {
     });
 
     setFilteredProducts(sortedProducts);
-  }, [sortValue, products, searchResults, isSearch]);
+  }, [sortValue, products, searchResults, isSearch, slug, priceRange]);
 
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
@@ -118,43 +206,57 @@ export default function Products() {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  console.log(isSearch);
 
   return (
     <>
-      <>
-        <div className="w-full flex gap-5 items-start">
-          <FilterBar specialClass={"hidden lg:flex w-1/4"} />
-          <div className="w-full lg:w-3/4 flex flex-col gap-5 items-start">
-            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2 p-2">
-              {currentProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+      <div className="w-full flex gap-5 items-start">
+        <FilterBar
+          specialClass={"hidden lg:flex w-1/4"}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          handleOpen={handleOpen}
+        />
+        <div className="w-full lg:w-3/4 flex flex-col gap-5 items-start">
+          {filteredProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center w-full py-10">
+              <h2 className="md:text-lg lg:text-xl font-bold">
+                No products available in this category.
+              </h2>
+              <p className="text-center md:text-sm lg:text-lg font-normal mt-2">
+                Try checking other categories or products.
+              </p>
             </div>
-            {filteredProducts.length > itemsPerPage && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(filteredProducts.length / itemsPerPage)}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2 p-2">
+                {currentProducts.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))}
+              </div>
+              {filteredProducts.length > itemsPerPage && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filteredProducts.length / itemsPerPage)}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
+          )}
         </div>
-        <MobileFilter handleOpen={handleOpen} open={open} />
-      </>
-      <>
-        {isSearch && searchResults.length === 0 && (
-          <div className="flex flex-col items-center justify-center">
-            <img src={nosearch} alt="" className="lg:w-[15%]" />
-            <h2 className="md:text-lg lg:text-xl font-bold mt-2">
-              Ooops! We couldn’t find what you were looking for
-            </h2>
-            <p className="text-center md:text-sm lg:text-lg font-normal mt-2">
-              Try searching for something else...
-            </p>
-          </div>
-        )}
-      </>
+      </div>
+      <MobileFilter handleOpen={handleOpen} open={open} />
+
+      {isSearch && searchResults.length === 0 && (
+        <div className="flex flex-col items-center justify-center">
+          <img src={nosearch} alt="" className="lg:w-[15%]" />
+          <h2 className="md:text-lg lg:text-xl font-bold mt-2">
+            Ooops! We couldn’t find what you were looking for.
+          </h2>
+          <p className="text-center md:text-sm lg:text-lg font-normal mt-2">
+            Try checking your spelling or use different keywords.
+          </p>
+        </div>
+      )}
     </>
   );
 }

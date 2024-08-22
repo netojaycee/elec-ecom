@@ -42,7 +42,7 @@ export default function ProductCard({ product }) {
         {/* <Link to={`/all-products/${product.slug}`} className="cursor-pointer"> */}
         <Link to={`/all-products/${slug}`} className="cursor-pointer">
           <img
-            src={product.image.secure_url}
+            src={product.images[0]}
             alt={product.name}
             className="w-[274px] h-[200px] object-contain"
           />

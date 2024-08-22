@@ -4,18 +4,19 @@ import CustomButton from "../../../components/CustomButton";
 import { GiCheckMark } from "react-icons/gi";
 import { useAddCategoryMutation } from "../../../redux/appData";
 import { toast } from "react-toastify";
+import { AiOutlineCloudUpload } from "react-icons/ai"; // Placeholder icon
 
 export default function AddCategory() {
   const [categoryName, setCategoryName] = useState("");
   const [image, setImage] = useState(null);
-  const [errors, setErrors] = React.useState("");
+  const [errors, setErrors] = useState("");
 
   const [addCategory, { isLoading, isSuccess, isError, error }] =
     useAddCategoryMutation();
 
   const handleImageChange = (event) => {
     if (event.target.files[0]) {
-      setImage(event.target.files[0]);
+      setImage(URL.createObjectURL(event.target.files[0]));
     }
   };
 
@@ -32,9 +33,8 @@ export default function AddCategory() {
     e.preventDefault();
 
     setErrors("");
-    console.log(categoryName, image);
     if (!categoryName || !image) {
-      alert("all fields are required");
+      toast.error("All fields are required");
       return;
     }
 
@@ -44,7 +44,6 @@ export default function AddCategory() {
         name: categoryName,
         image: imageBase64,
       };
-      console.log(credentials);
 
       await addCategory(credentials);
       setCategoryName("");
@@ -59,10 +58,7 @@ export default function AddCategory() {
     if (isSuccess) {
       toast.success("Category added successfully!");
     } else if (isError) {
-      toast.error("upload  failed");
-      // if (error.data.error.message) {
-      //   setErrors(error.data.error.message);
-      // }
+      toast.error("Upload failed");
     }
   }, [isSuccess, isError]);
 
@@ -72,7 +68,7 @@ export default function AddCategory() {
 
       <div className="flex lg:flex-row flex-col gap-4">
         <div className="w-full lg:w-[40%] bg-white rounded-lg p-4">
-          <div className="bg-[#D0D0D0] flex justify-center items-center h-full">
+          <div className="bg-[#D0D0D0] flex justify-center items-center h-[150px] w-[150px] fixed-size">
             <input
               type="file"
               accept="image/*"
@@ -84,10 +80,20 @@ export default function AddCategory() {
               htmlFor="image-upload"
               className="cursor-pointer flex flex-col justify-center items-center h-full"
             >
-              <p className="text-center text-sm p-3">
-                Upload a category image thumbnail. Drag and drop your image or
-                touch the icon to select a file.
-              </p>
+              {image ? (
+                <img
+                  src={image}
+                  alt="Selected Category"
+                  className="object-cover w-full h-full rounded-md"
+                />
+              ) : (
+                <>
+                  <AiOutlineCloudUpload size={50} className="text-gray-500" />
+                  <p className="text-center text-sm p-3">
+                    Upload a category image thumbnail. Touch the icon to select a file.
+                  </p>
+                </>
+              )}
             </label>
           </div>
         </div>

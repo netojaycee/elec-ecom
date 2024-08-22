@@ -8,8 +8,9 @@ import { setUserInfo } from "./slices/userSlice";
 import { jwtDecode } from "jwt-decode";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/",
+  // baseUrl: "http://localhost:5000/api/",
   // baseUrl: "https://powermart.onrender.com/api/",
+  baseUrl: "https://powermartelectricals.com/api/",
   prepareHeaders: (headers, { getState }) => {
     headers.set("Content-Type", "application/json");
     const token = getState().auth.token;
@@ -32,35 +33,87 @@ const baseQuery = fetchBaseQuery({
 export const productsApi = createApi({
   reducerPath: "products",
   baseQuery,
+  tagTypes: ["Category", "Product"],
   endpoints: (builder) => ({
     getAllProduct: builder.query({
       query: () => "/products",
+      providesTags: ["Product"],
     }),
     getAllCategory: builder.query({
       query: () => "/categories",
+      providesTags: ["Category"],
     }),
     //     getOneProduct: builder.query({
     //       query: (id) => `products/${id}`,
     //     }),
-        addCategory: builder.mutation({
-          query: (credentials) => ({
-            url: "/category",
-            method: "POST",
-            body: credentials,
-          }),
+    addCategory: builder.mutation({
+      query: (credentials) => ({
+        url: "/category",
+        method: "POST",
+        body: credentials,
+      }),
 
-          onQueryStarted: async (arg, { queryFulfilled }) => {
-            try {
-              // console.log("registered");
-              await queryFulfilled;
-    
-             
-             
-            } catch (err) {
-              console.error("category add failed:", err);
-            }
-          },
-        }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          console.error("category add failed:", err);
+        }
+      },
+      invalidatesTags: ["Category"],
+    }),
+    editCategory: builder.mutation({
+      query: ({ slug, credentials }) => ({
+        url: `categories/${slug}`,
+        method: "PUT",
+        body: credentials,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          console.error("category add failed:", err);
+        }
+      },
+      invalidatesTags: ["Category"],
+    }),
+    addProduct: builder.mutation({
+      query: (credentials) => ({
+        url: "/products",
+        method: "POST",
+        body: credentials,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          console.error("product add failed:", err);
+        }
+      },
+      invalidatesTags: ["Product"],
+    }),
+    editProduct: builder.mutation({
+      query: ({ slug, credentials }) => ({
+        url: `products/${slug}`,
+        method: "PATCH",
+        body: credentials,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          console.error("product edit failed:", err);
+        }
+      },
+      invalidatesTags: ["Product"],
+    }),
     //     updateProduct: builder.mutation({
     //       query: ({ id, updatedProduct }) => ({
     //         url: `products/${id}`,
@@ -172,18 +225,18 @@ export const productsApi = createApi({
       },
     }),
 
-    // logout: builder.mutation({
-    //   queryFn: () => ({ data: null }), // No API call, just return success
-    //   onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //       dispatch(clearCredentials());
-    //       dispatch(clearUserInfo());
-    //     } catch (err) {
-    //       console.error("Logout failed:", err);
-    //     }
-    //   },
-    // }),
+    logout: builder.mutation({
+      queryFn: () => ({ data: null }), // No API call, just return success
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(clearCredentials());
+          dispatch(clearUserInfo());
+        } catch (err) {
+          console.error("Logout failed:", err);
+        }
+      },
+    }),
     // getAllQuestionnaires: builder.query({
     //   query: () => "categories",
     // }),
@@ -260,20 +313,36 @@ export const productsApi = createApi({
     //     }
     //   },
     // }),
-    // deleteNote: builder.mutation({
-    //   query: ({ credentials }) => ({
-    //     url: `clients/${credentials.pk}/delete_client_clinical_notes`,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       console.error("fetch failed:", err);
-    //     }
-    //   },
-    // }),
+    deleteCategory: builder.mutation({
+      query: (credentials) => ({
+        url: `categories/${credentials}`,
+        method: "DELETE",
+        // body: credentials,
+      }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          console.error("fetch failed:", err);
+        }
+      },
+      invalidatesTags: ["Category"],
+    }),
+    deleteProduct: builder.mutation({
+      query: (credentials) => ({
+        url: `products/${credentials}`,
+        method: "DELETE",
+        // body: credentials,
+      }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          console.error("fetch failed:", err);
+        }
+      },
+      invalidatesTags: ["Product"],
+    }),
   }),
 });
 
@@ -290,9 +359,14 @@ export const {
   useGetAllProductQuery,
   useGetAllCategoryQuery,
   useAddCategoryMutation,
-  // useLogoutMutation,
+  useEditCategoryMutation,
+  useAddProductMutation,
+  useEditProductMutation,
+
+  useLogoutMutation,
   // useGenerateAiClinicalNoteMutation,
   // useAddNoteMutation,
   // useEditNoteMutation,
-  // useDeleteNoteMutation,
+  useDeleteCategoryMutation,
+  useDeleteProductMutation,
 } = productsApi;

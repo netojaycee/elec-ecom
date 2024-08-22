@@ -2,20 +2,130 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { BsSearch } from "react-icons/bs";
 import { IoCart } from "react-icons/io5";
-import { FaHeart, FaRegUser } from "react-icons/fa";
-import { BiSearch } from "react-icons/bi";
+import {
+  FaSave,
+  FaShoppingCart,
+  FaUserCog,
+  FaThList,
+  FaSignOutAlt,
+  FaLightbulb,
+  FaPlug,
+  FaRegLightbulb,
+  FaToolbox,
+  FaRegClock,
+  FaHeart,
+  FaRegUser,
+  FaUserEdit,
+} from "react-icons/fa";
+import { BiBasket, BiSearch } from "react-icons/bi";
 import { RiMenu3Line } from "react-icons/ri";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+
+import { Link, useNavigate } from "react-router-dom";
+import {
+  useGetAllCategoryQuery,
+  useGetAllProductQuery,
+  useLogoutMutation,
+} from "../redux/appData";
 import {
   Drawer,
-  Button,
-  Typography,
   IconButton,
+  Popover,
+  PopoverHandler,
+  PopoverContent,
+  Button,
+  Avatar,
+  Typography,
 } from "@material-tailwind/react";
-import { Link, useNavigate } from "react-router-dom";
-import { useGetAllProductQuery } from "../redux/appData";
+import { persistor } from "../redux/store";
 
-export function MobileSidebar({ open, setOpen, openDrawer, closeDrawer }) {
+export function ProfileInfo() {
+  const [openPopover, setOpenPopover] = React.useState(false);
+
+  const triggers = {
+    onMouseEnter: () => setOpenPopover(true),
+    onMouseLeave: () => setOpenPopover(false),
+  };
+  const [logout, { isLoading, isError }] = useLogoutMutation(); // Destructure logout function and status
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap(); // Call logout and wait for it to resolve
+      await persistor.purge(); // Clear persisted state from local storage
+      navigate("/auth");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  return (
+    <Popover open={openPopover} handler={setOpenPopover}>
+      <PopoverHandler {...triggers}>
+        <div className="hidden lg:flex items-center gap-2 text-white">
+          <FaRegUser className="border border-white rounded-full h-6 w-6 p-1 " />{" "}
+          <span className="text-sm flex items-center gap-1">
+            Hello, John <IoIosArrowDown />
+          </span>
+        </div>
+      </PopoverHandler>
+      <PopoverContent
+        {...triggers}
+        className="z-50 max-w-[16rem] bg-white shadow-lg p-4 rounded-lg"
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <FaRegUser className="text-gray-600" />
+            <span className="font-semibold text-gray-800">John Doe</span>
+          </div>
+          <hr className="border-gray-300" />
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <Link
+                to={"/my-orders"}
+                className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
+              >
+                <BiBasket className="text-gray-600" />
+                <span>My Orders</span>
+              </Link>
+
+              <IoIosArrowForward className="text-gray-400" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 hover:text-blue-600 cursor-pointer">
+                <FaUserEdit className="text-gray-600" />
+                <span>Account Management</span>
+              </div>
+
+              <IoIosArrowForward className="text-gray-400" />
+            </div>
+            <hr className="w-[90%] mx-auto" />
+            <span
+              onClick={handleLogout}
+              className=" cursor-pointer text-red-500 flex items-center gap-2"
+            >
+              <FaSignOutAlt className="text-red-500" /> Sign Out
+            </span>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+export function MobileSidebar({ open, closeDrawer }) {
+  const { data: categories } = useGetAllCategoryQuery();
+  const [logout, { isLoading, isError }] = useLogoutMutation(); // Destructure logout function and status
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap(); // Call logout and wait for it to resolve
+      await persistor.purge(); // Clear persisted state from local storage
+      closeDrawer();
+      navigate("/auth");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <React.Fragment>
       <Drawer
@@ -25,9 +135,7 @@ export function MobileSidebar({ open, setOpen, openDrawer, closeDrawer }) {
         className="p-4"
       >
         <div className="mb-6 flex items-center justify-between">
-          <Typography variant="h5" color="blue-gray">
-            Material Tailwind
-          </Typography>
+          <Logo />
           <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -45,16 +153,61 @@ export function MobileSidebar({ open, setOpen, openDrawer, closeDrawer }) {
             </svg>
           </IconButton>
         </div>
-        <Typography color="gray" className="mb-8 pr-4 font-normal">
-          Material Tailwind features multiple React and HTML components, all
-          written with Tailwind CSS classes and Material Design guidelines.
-        </Typography>
-        <div className="flex gap-2">
-          <Button size="sm" variant="outlined">
-            Documentation
-          </Button>
-          <Button size="sm">Get Started</Button>
-        </div>
+        <nav className="flex flex-col gap-4">
+          <Link
+            onClick={closeDrawer}
+            to="/saved-items"
+            className="flex items-center gap-2 hover:text-blue-gray-800"
+          >
+            <FaSave /> <Typography color="gray">Saved Items</Typography>
+          </Link>
+          <Link
+            onClick={closeDrawer}
+            to="/my-orders"
+            className="flex items-center gap-2 hover:text-blue-gray-800"
+          >
+            <FaShoppingCart /> <Typography color="gray">My Orders</Typography>
+          </Link>
+          <Link
+            onClick={closeDrawer}
+            to="/account-management"
+            className="flex items-center gap-2 hover:text-blue-gray-800"
+          >
+            <FaUserCog />{" "}
+            <Typography color="gray">Account Management</Typography>
+          </Link>
+
+          <hr className="border-gray-300 my-2" />
+          <div className="flex items-center gap-2 text-gray-500">
+            <Typography color="gray" className="opacity-70">
+              Product Categories
+            </Typography>
+          </div>
+
+          <div className=" flex flex-col gap-2">
+            {categories &&
+              categories.map((category) => (
+                <Link
+                  onClick={closeDrawer}
+                  key={category.slug}
+                  to={`/all-categories/${category.slug}`}
+                  className="flex items-center gap-2 hover:text-blue-gray-800"
+                >
+                  <FaRegClock />
+                  <Typography color="gray">{category.name}</Typography>
+                </Link>
+              ))}
+          </div>
+
+          <hr className="border-gray-300 my-2" />
+          <span
+            onClick={handleLogout}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <FaSignOutAlt className="text-red-400" />
+            <Typography color="red">Sign Out</Typography>
+          </span>
+        </nav>
       </Drawer>
     </React.Fragment>
   );
@@ -165,12 +318,9 @@ export default function Header() {
               <FaHeart className="border border-white rounded-full h-6 w-6 p-1 " />{" "}
               <span className="text-sm">Saved Items</span>
             </Link>
-            <div className="hidden lg:flex items-center gap-2 text-white">
-              <FaRegUser className="border border-white rounded-full h-6 w-6 p-1 " />{" "}
-              <span className="text-sm flex items-center gap-1">
-                My Profile <IoIosArrowDown />
-              </span>
-            </div>
+
+            <ProfileInfo />
+
             <div className="flex lg:hidden items-center gap-2 text-white">
               <RiMenu3Line
                 onClick={openDrawer}
