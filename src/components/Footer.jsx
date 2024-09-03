@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row gap-4 items-center lg:items-start w-full lg:w-auto order-1 lg:order-3">
           <div className="flex items-center gap-4">
             <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
+            {/* <Link to="/about">About</Link> */}
             <Link to="/support">Support</Link>
             <Link to="/contact-us">Contact</Link>
           </div>

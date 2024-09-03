@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,7 +25,7 @@ import AdminLayout from "./components/Admin/AdminLayout";
 import "../node_modules/slick-carousel/slick/slick.css";
 import "../node_modules/slick-carousel/slick/slick-theme.css";
 import Categories from "./pages/Categories";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Protected from "./components/Protected";
 import Dashboard from "./pages/Admin/Dashboard";
 import AddProduct from "./pages/Admin/Products/AddProduct";
@@ -34,10 +34,32 @@ import AllCategory from "./pages/Admin/Category/AllCategory";
 import AddCategory from "./pages/Admin/Category/AddCategory";
 import OrderDetailsAdmin from "./pages/Admin/Orders/OrderDetailsAdmin";
 import AllOrders from "./pages/Admin/Orders/AllOrders";
+import { jwtDecode } from "jwt-decode";
+import { setUserInfo } from "./redux/slices/userSlice";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const isAdmin = useSelector((state) => state.auth.isAdmin);
+  const user = useSelector((state) => state.user); // Get user state from Redux
+
+  const { isAdmin } = user;
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+
+        // Extract required fields from the decoded token
+        const { name, email, isAdmin, _id } = decodedToken;
+
+        // Dispatch the action to set user info in the state
+        dispatch(setUserInfo({ name, email, isAdmin, _id }));
+      } catch (error) {
+        console.error("Token decoding failed:", error);
+      }
+    }
+  }, [token, dispatch]);
 
   return (
     <>
@@ -67,7 +89,10 @@ function App() {
           <Route path="/*" element={<Navigate to="/error" />} />
         </Route>
         {/* admin routes */}
-        <Route path="admin" element={<AdminLayout />}>
+        <Route
+          path="admin"
+          element={isAdmin ? <AdminLayout /> : <Navigate to="/" />}
+        >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="all-product" element={<AllProducts />} />
           <Route path="add-product" element={<AddProduct />} />
@@ -81,6 +106,7 @@ function App() {
           element={isAuthenticated ? <Navigate to="/" /> : <Auth />}
         />
         <Route path="/reset-password/:token" element={<ResetPass />} />
+        <Route path="/forgot-password" element={<ForgotPass />} />
       </Routes>
       <ToastContainer
         position="top-right"

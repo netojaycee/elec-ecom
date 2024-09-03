@@ -8,9 +8,8 @@ import { setUserInfo } from "./slices/userSlice";
 import { jwtDecode } from "jwt-decode";
 
 const baseQuery = fetchBaseQuery({
-  // baseUrl: "http://localhost:5000/api/",
-  // baseUrl: "https://powermart.onrender.com/api/",
-  baseUrl: "https://powermartelectricals.com/api/",
+  baseUrl: "http://localhost:5000/api/",
+  // baseUrl: "https://powermartelectricals.com/api/",
   prepareHeaders: (headers, { getState }) => {
     headers.set("Content-Type", "application/json");
     const token = getState().auth.token;
@@ -172,6 +171,49 @@ export const productsApi = createApi({
     //   },
     // }),
 
+    forgotPass: builder.mutation({
+      query: (credentials) => ({
+        url: "/forgot-password",
+        method: "POST",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          const response = await queryFulfilled;
+        } catch (err) {
+          console.error("Reset Link send  failed:", err);
+        }
+      },
+    }),
+
+    resetPass: builder.mutation({
+      query: ({ credentials, token }) => ({
+        url: `/reset-password/${token}`,
+        method: "POST",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          const response = await queryFulfilled;
+        } catch (err) {
+          console.error("Reset Link send  failed:", err);
+        }
+      },
+    }),
+    contact: builder.mutation({
+      query: (credentials ) => ({
+        url: `/contact`,
+        method: "POST",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          const response = await queryFulfilled;
+        } catch (err) {
+          console.error("Reset Link send  failed:", err);
+        }
+      },
+    }),
     login: builder.mutation({
       query: (credentials) => ({
         url: "/login",
@@ -355,6 +397,9 @@ export const {
   // useGetProfileQuery,
   // useGetAllNotesMutation,
   useLoginMutation,
+  useContactMutation,
+  useForgotPassMutation,
+  useResetPassMutation,
   useRegisterMutation,
   useGetAllProductQuery,
   useGetAllCategoryQuery,

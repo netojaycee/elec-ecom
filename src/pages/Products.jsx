@@ -16,7 +16,7 @@ import CustomButton from "../components/CustomButton";
 import { useGetAllCategoryQuery, useGetAllProductQuery } from "@/redux/appData";
 import nosearch from "@/assets/images/nosearch.png";
 
-export function MobileFilter({ open, handleOpen }) {
+export function MobileFilter({ open, handleOpen, priceRange, setPriceRange }) {
   return (
     <>
       <Dialog open={open} handler={handleOpen}>
@@ -29,7 +29,12 @@ export function MobileFilter({ open, handleOpen }) {
           />
         </DialogHeader>
         <DialogBody>
-          <FilterBar handleOpen={handleOpen} specialClass={"w-full"} />
+          <FilterBar
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            handleOpen={handleOpen}
+            specialClass={"w-full"}
+          />
         </DialogBody>
         <DialogFooter>
           <CustomButton
@@ -244,7 +249,12 @@ export default function Products() {
           )}
         </div>
       </div>
-      <MobileFilter handleOpen={handleOpen} open={open} />
+      <MobileFilter
+        handleOpen={handleOpen}
+        open={open}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+      />
 
       {isSearch && searchResults.length === 0 && (
         <div className="flex flex-col items-center justify-center">

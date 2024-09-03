@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import CustomInput from "../../../components/CustomInput";
 import CustomButton from "../../../components/CustomButton";
 import { GiCheckMark } from "react-icons/gi";
-import { useGetAllCategoryQuery, useAddProductMutation } from "../../../redux/appData";
+import {
+  useGetAllCategoryQuery,
+  useAddProductMutation,
+} from "../../../redux/appData";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function AddProduct() {
   const [name, setName] = useState("");
@@ -11,44 +15,68 @@ export default function AddProduct() {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [images, setImages] = useState([]);
-  const [errors, setErrors] = useState("");
+  const [images, setImages] = useState([]); // Store selected image files
+  const [imagePreviews, setImagePreviews] = useState([]); // Store image preview URLs
+  const [isLoading, setIsLoading] = useState("");
+  const [errors, setErrors] = useState([]);
 
   const { data: categories = [] } = useGetAllCategoryQuery();
-  const [addProduct, { isLoading, isSuccess, isError }] = useAddProductMutation();
+  const [addProduct, { isLoading: isAddingProduct, isSuccess, isError }] =
+    useAddProductMutation();
 
   const handleImageChange = (event) => {
     if (event.target.files.length) {
-      const files = Array.from(event.target.files).slice(0, 4); // Limit to 4 files
-      setImages(prevImages => [...prevImages, ...files]);
+      const files = Array.from(event.target.files).slice(0, 4 - images.length); // Limit to 4 files
+      const newPreviews = files.map((file) => URL.createObjectURL(file));
+      setImages((prevImages) => [...prevImages, ...files]);
+      setImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
     }
   };
 
   const handleImageRemove = (index) => {
-    setImages(prevImages => prevImages.filter((_, i) => i !== index));
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setImagePreviews((prevPreviews) =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
   };
 
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "db0zguvf");
+    formData.append("folder", "powermart");
+
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dgz5bgdzc/auto/upload",
+        formData
+      );
+      return response.data.secure_url; // Return the secure URL of the uploaded file
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw new Error("Failed to upload file to Cloudinary");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors("");
 
-    if (!name || !description || !category || !price || !quantity || images.length === 0) {
-      toast.error("All fields are required and at least one image must be uploaded");
-      return;
+    const requiredFields = [name, description, category, price, quantity];
+    const hasEmptyField = requiredFields.some(field => !field);
+    console.log(requiredFields)
+
+    if (hasEmptyField || images.length !== 4) {
+        toast.error("All fields are required and exactly four images must be uploaded.");
+        return;
     }
 
+    setIsLoading(true);
+
     try {
-      const imagePromises = images.map(image => convertToBase64(image));
-      const imagesBase64 = await Promise.all(imagePromises);
+      const uploadPromises = images.map((image) => uploadFile(image));
+      const imageUrls = await Promise.all(uploadPromises);
+      console.log(imageUrls);
 
       const productData = {
         name,
@@ -56,17 +84,14 @@ export default function AddProduct() {
         category,
         price,
         quantity,
-        images: imagesBase64,
+        images: imageUrls, // Send the array of URLs to the backend
       };
-
+console.log(productData)
       await addProduct(productData);
-      setName("");
-      setDescription("");
-      setCategory("");
-      setPrice("");
-      setQuantity("");
-      setImages([]);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
+
       setErrors(error.message || "Upload failed");
       console.error(error);
     }
@@ -74,6 +99,13 @@ export default function AddProduct() {
 
   React.useEffect(() => {
     if (isSuccess) {
+      setName("");
+      setDescription("");
+      setCategory("");
+      setPrice("");
+      setQuantity("");
+      setImages([]);
+      setImagePreviews([]); // Clear the previews
       toast.success("Product added successfully!");
     } else if (isError) {
       toast.error("Product upload failed");
@@ -99,12 +131,12 @@ export default function AddProduct() {
               htmlFor="image-upload"
               className="cursor-pointer flex flex-col justify-center items-center h-full p-4"
             >
-              {images.length ? (
+              {imagePreviews.length ? (
                 <div className="grid grid-cols-2 gap-2">
-                  {images.map((file, index) => (
+                  {imagePreviews.map((preview, index) => (
                     <div key={index} className="relative">
                       <img
-                        src={URL.createObjectURL(file)}
+                        src={preview}
                         alt={`product-preview-${index}`}
                         className="w-full h-full object-cover rounded-md"
                       />
@@ -120,8 +152,10 @@ export default function AddProduct() {
                 </div>
               ) : (
                 <div className="text-center text-sm p-3">
-                  <p>Upload product images</p>
-                  <p>Drag and drop your images or click here to select files.</p>
+                  <p>Upload product images (up to 4)</p>
+                  <p>
+                    Drag and drop your images or click here to select files.
+                  </p>
                 </div>
               )}
             </label>

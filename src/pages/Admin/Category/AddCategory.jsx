@@ -4,29 +4,45 @@ import CustomButton from "../../../components/CustomButton";
 import { GiCheckMark } from "react-icons/gi";
 import { useAddCategoryMutation } from "../../../redux/appData";
 import { toast } from "react-toastify";
-import { AiOutlineCloudUpload } from "react-icons/ai"; // Placeholder icon
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import axios from "axios";
 
 export default function AddCategory() {
   const [categoryName, setCategoryName] = useState("");
   const [image, setImage] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null); // For image preview
   const [errors, setErrors] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [addCategory, { isLoading, isSuccess, isError, error }] =
-    useAddCategoryMutation();
+  const [
+    addCategory,
+    { isLoading: isAddingCategory, isSuccess, isError, error },
+  ] = useAddCategoryMutation();
 
-  const handleImageChange = (event) => {
-    if (event.target.files[0]) {
-      setImage(URL.createObjectURL(event.target.files[0]));
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreviewUrl(URL.createObjectURL(file)); // Create a preview URL
     }
   };
 
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "db0zguvf");
+    formData.append("folder", "powermart");
+
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dgz5bgdzc/auto/upload",
+        formData
+      );
+      return response.data.secure_url; // Return the secure URL of the uploaded file
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw new Error("Failed to upload file to Cloudinary");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -37,18 +53,30 @@ export default function AddCategory() {
       toast.error("All fields are required");
       return;
     }
+    setIsLoading(true);
 
+    let imageUrl = "";
+
+    if (image) {
+      try {
+        imageUrl = await uploadFile(image);
+        console.log(imageUrl);
+      } catch (error) {
+        setErrors("Failed to upload image. Please try again.");
+        return;
+      }
+    }
     try {
-      const imageBase64 = await convertToBase64(image);
       const credentials = {
         name: categoryName,
-        image: imageBase64,
+        image: imageUrl,
       };
 
       await addCategory(credentials);
-      setCategoryName("");
-      setImage(null);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
+
       setErrors(error.error.data);
       console.error(error);
     }
@@ -56,6 +84,9 @@ export default function AddCategory() {
 
   React.useEffect(() => {
     if (isSuccess) {
+      setCategoryName("");
+      setImage(null);
+      setImagePreviewUrl(null); // Clear the preview after submission
       toast.success("Category added successfully!");
     } else if (isError) {
       toast.error("Upload failed");
@@ -67,34 +98,24 @@ export default function AddCategory() {
       {errors && <p className="text-red-500 mb-3 text-sm">{errors}</p>}
 
       <div className="flex lg:flex-row flex-col gap-4">
-        <div className="w-full lg:w-[40%] bg-white rounded-lg p-4">
-          <div className="bg-[#D0D0D0] flex justify-center items-center h-[150px] w-[150px] fixed-size">
+        <div className="w-full lg:w-[40%] bg-white rounded-lg p-4 flex items-center">
+          <div className="bg-[#D0D0D0] flex justify-center items-center h-[150px] w-[150px] fixed-size text-xs">
             <input
+              className="mb-2 p-3 bg-gray-200 border w-[70%]"
               type="file"
-              accept="image/*"
+              name="image"
               onChange={handleImageChange}
-              className="hidden"
               id="image-upload"
             />
-            <label
-              htmlFor="image-upload"
-              className="cursor-pointer flex flex-col justify-center items-center h-full"
-            >
-              {image ? (
-                <img
-                  src={image}
-                  alt="Selected Category"
-                  className="object-cover w-full h-full rounded-md"
-                />
-              ) : (
-                <>
-                  <AiOutlineCloudUpload size={50} className="text-gray-500" />
-                  <p className="text-center text-sm p-3">
-                    Upload a category image thumbnail. Touch the icon to select a file.
-                  </p>
-                </>
-              )}
-            </label>
+          </div>
+          <div className="mb-2 bg-gray-200 border w-[150px] mx-auto rounded-full">
+            {imagePreviewUrl && (
+              <img
+                src={imagePreviewUrl}
+                alt="Selected Category"
+                className="w-[150px] h-[150px] object-cover rounded-full"
+              />
+            )}
           </div>
         </div>
         <div className="flex flex-col w-full lg:w-[60%] gap-4">

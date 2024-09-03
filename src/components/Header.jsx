@@ -18,7 +18,7 @@ import {
   FaUserEdit,
 } from "react-icons/fa";
 import { BiBasket, BiSearch } from "react-icons/bi";
-import { RiMenu3Line } from "react-icons/ri";
+import { RiAdminLine, RiMenu3Line } from "react-icons/ri";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -33,38 +33,44 @@ import {
   Popover,
   PopoverHandler,
   PopoverContent,
-  Button,
-  Avatar,
+  Dialog,
+  DialogBody,
+  DialogHeader,
   Typography,
 } from "@material-tailwind/react";
 import { persistor } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
 export function ProfileInfo() {
   const [openPopover, setOpenPopover] = React.useState(false);
+  const user = useSelector((state) => state.user); // Get user state from Redux
 
-  const triggers = {
-    onMouseEnter: () => setOpenPopover(true),
-    onMouseLeave: () => setOpenPopover(false),
-  };
-  const [logout, { isLoading, isError }] = useLogoutMutation(); // Destructure logout function and status
+  const { name, email, isAdmin } = user; // Destructure name and email from user
+  const [logout] = useLogoutMutation();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
-      await logout().unwrap(); // Call logout and wait for it to resolve
-      await persistor.purge(); // Clear persisted state from local storage
+      await logout().unwrap();
+      await persistor.purge();
       navigate("/auth");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
+  const triggers = {
+    onMouseEnter: () => setOpenPopover(true),
+    onMouseLeave: () => setOpenPopover(false),
+  };
+
   return (
     <Popover open={openPopover} handler={setOpenPopover}>
       <PopoverHandler {...triggers}>
         <div className="hidden lg:flex items-center gap-2 text-white">
-          <FaRegUser className="border border-white rounded-full h-6 w-6 p-1 " />{" "}
+          <FaRegUser className="border border-white rounded-full h-6 w-6 p-1" />
           <span className="text-sm flex items-center gap-1">
-            Hello, John <IoIosArrowDown />
+            Hello, {name.split(" ")[0] || (isAdmin ? "Admin" : "Guest")} <IoIosArrowDown />
           </span>
         </div>
       </PopoverHandler>
@@ -75,7 +81,9 @@ export function ProfileInfo() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <FaRegUser className="text-gray-600" />
-            <span className="font-semibold text-gray-800">John Doe</span>
+            <span className="font-semibold text-gray-800">
+              {name || "Guest"}
+            </span>
           </div>
           <hr className="border-gray-300" />
           <div className="flex flex-col gap-2">
@@ -87,21 +95,31 @@ export function ProfileInfo() {
                 <BiBasket className="text-gray-600" />
                 <span>My Orders</span>
               </Link>
-
               <IoIosArrowForward className="text-gray-400" />
             </div>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 hover:text-blue-600 cursor-pointer">
+              <Link
+                to="/settings"
+                className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
+              >
                 <FaUserEdit className="text-gray-600" />
-                <span>Account Management</span>
-              </div>
-
+                <span>Settings</span>
+              </Link>
               <IoIosArrowForward className="text-gray-400" />
             </div>
+            {isAdmin && (
+              <div className="flex items-center justify-between">
+                <Link to="/admin/dashboard" className="flex items-center gap-2 hover:text-blue-600 cursor-pointer">
+                  <RiAdminLine className="text-gray-600" />
+                  <span>Dashboard</span>
+                </Link>
+                <IoIosArrowForward className="text-gray-400" />
+              </div>
+            )}
             <hr className="w-[90%] mx-auto" />
             <span
               onClick={handleLogout}
-              className=" cursor-pointer text-red-500 flex items-center gap-2"
+              className="cursor-pointer text-red-500 flex items-center gap-2"
             >
               <FaSignOutAlt className="text-red-500" /> Sign Out
             </span>
@@ -111,7 +129,6 @@ export function ProfileInfo() {
     </Popover>
   );
 }
-
 export function MobileSidebar({ open, closeDrawer }) {
   const { data: categories } = useGetAllCategoryQuery();
   const [logout, { isLoading, isError }] = useLogoutMutation(); // Destructure logout function and status
@@ -217,6 +234,7 @@ export default function Header() {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [openSearch, setOpenSearch] = React.useState(false);
 
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
@@ -235,6 +253,7 @@ export default function Header() {
     });
 
     setSearchQuery("");
+    setOpenSearch(false);
     // Implement search logic if needed
   };
   return (
@@ -301,9 +320,13 @@ export default function Header() {
             </form>
           </div>
           <div className="w-[35%] flex items-center justify-end gap-5">
-            <div className="flex items-center gap-2 text-white lg:hidden">
+            <div
+              className="flex items-center gap-2 text-white lg:hidden"
+              onClick={() => setOpenSearch(true)} // Open mobile search
+            >
               <BsSearch className="h-4 w-4" />
             </div>
+
             <Link
               to="/shopping-cart"
               className="flex items-center gap-2 text-white"
@@ -330,6 +353,54 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Dialog */}
+      <Dialog open={openSearch} handler={setOpenSearch} size="xl">
+        <DialogHeader>Search Products</DialogHeader>
+        <DialogBody>
+          <form onSubmit={handleSearch} className="flex flex-col gap-4">
+            <input
+              type="text"
+              name="search"
+              className="p-2 rounded-md w-full"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-primary px-4 py-2 rounded-md text-white"
+            >
+              Search
+            </button>
+            {/* Display search results */}
+            {searchQuery && (
+              <div className="bg-white p-2 rounded shadow-lg">
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <div
+                      key={product._id}
+                      className="p-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+                      onClick={() => {
+                        navigate(`/all-products/?search=${product.name}`, {
+                          state: { SearchResults: filteredProducts },
+                        });
+                        setSearchQuery("");
+                        setOpenSearch(false); // Close modal after selection
+                      }}
+                    >
+                      {product.name}
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-2">No products found.</div>
+                )}
+              </div>
+            )}
+          </form>
+        </DialogBody>
+      </Dialog>
+
       <MobileSidebar
         open={open}
         setOpen={setOpen}

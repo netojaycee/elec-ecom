@@ -392,7 +392,7 @@ export default function AllProducts() {
 
                   <BiTrash
                     className="w-4 h-4 cursor-pointer"
-                    onClick={() => handleDelete(productItem._id)}
+                    onClick={() => handleDelete(productItem.slug)}
                   />
                 </p>
               </div>
