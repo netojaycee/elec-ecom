@@ -28,7 +28,7 @@ export default function SavedItems() {
                 <div className="flex md:w-[60%] w-full justify-between md:justify-start items-center">
                   <div className="text-sm font-normal flex items-center gap-4 lg:gap-10 w-full">
                     <img
-                      src={item.image.secure_url}
+                      src={item.images[0]}
                       alt=""
                       className="w-[100px] h-[80px] bg-gray-300 rounded-md"
                     />
