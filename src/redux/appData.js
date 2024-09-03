@@ -200,8 +200,22 @@ export const productsApi = createApi({
         }
       },
     }),
+    editUser: builder.mutation({
+      query: ({ credentials, id }) => ({
+        url: `/users/${id}`,
+        method: "PATCH",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          const response = await queryFulfilled;
+        } catch (err) {
+          console.error("Reset Link send  failed:", err);
+        }
+      },
+    }),
     contact: builder.mutation({
-      query: (credentials ) => ({
+      query: (credentials) => ({
         url: `/contact`,
         method: "POST",
         body: credentials,
@@ -400,6 +414,7 @@ export const {
   useContactMutation,
   useForgotPassMutation,
   useResetPassMutation,
+  useEditUserMutation,
   useRegisterMutation,
   useGetAllProductQuery,
   useGetAllCategoryQuery,

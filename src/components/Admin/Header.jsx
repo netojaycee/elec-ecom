@@ -106,8 +106,8 @@ export function ProfileInfo() {
 
 export default function Header() {
   return (
-    <div className="bg-white h-[60px] fixed top-0 w-full p-3 flex items-end justify-between">
-      {" "}
+<div className="bg-white h-[60px] fixed top-0 w-full p-3 flex items-end justify-between">
+    kn
       <ProfileInfo />
     </div>
   );
