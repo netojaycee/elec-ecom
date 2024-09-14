@@ -14,10 +14,11 @@ const baseQuery = fetchBaseQuery({
     headers.set("Content-Type", "application/json");
     const token = getState().auth.token;
     if (token) {
-      headers.set("Authorization", `Token ${token}`);
+      headers.set("X-auth-token", token); // Use X-auth-token instead of Authorization
     }
     return headers;
   },
+  
   // Custom response handler to handle text responses
   async responseHandler(response) {
     const text = await response.text();
