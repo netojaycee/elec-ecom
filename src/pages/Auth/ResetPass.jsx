@@ -28,23 +28,22 @@ export default function ResetPass() {
       const credentials = {
         password,
         confirmPassword,
-
       };
-      await resetPass({credentials, token});
+      await resetPass({ credentials, token });
       // console.log(credentials);
     } catch (error) {
       console.log(error);
     }
   };
-  const navigate = useNavigate()
-  console.log(token)
+  const navigate = useNavigate();
+  console.log(token);
 
   React.useEffect(() => {
     if (isSuccess) {
-      toast.success("Reset password successfully!");
+      toast.success("password Reset successful!");
       navigate("/auth");
     } else if (isError) {
-      toast.error("resent password failed");
+      toast.error("password Reset failed");
       setErrors(error.data);
     }
   }, [isSuccess, isError]);
@@ -86,7 +85,7 @@ export default function ResetPass() {
             />
             <CustomButton
               type={"normal"}
-              text={isLoading ? "Resetting..." : "Request password"}
+              text={isLoading ? "Resetting..." : "Reset password"}
               width={"full"}
               onClick={""}
             />

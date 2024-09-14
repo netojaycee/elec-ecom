@@ -53,6 +53,9 @@ export default function Categories() {
       },
     ],
   };
+
+  console.log(categories);
+
   return (
     <>
       <div className="bg-background_bl text-white p-4 flex items-center justify-between">

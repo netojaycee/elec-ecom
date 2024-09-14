@@ -40,6 +40,7 @@ import {
 } from "@material-tailwind/react";
 import { persistor } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import CustomButton from "./CustomButton";
 
 export function ProfileInfo() {
   const [openPopover, setOpenPopover] = React.useState(false);
@@ -58,6 +59,7 @@ export function ProfileInfo() {
       console.error("Logout failed:", error);
     }
   };
+  console.log(user);
 
   const triggers = {
     onMouseEnter: () => setOpenPopover(true),
@@ -65,68 +67,84 @@ export function ProfileInfo() {
   };
 
   return (
-    <Popover open={openPopover} handler={setOpenPopover}>
-      <PopoverHandler {...triggers}>
-        <div className="hidden lg:flex items-center gap-2 text-white">
-          <FaRegUser className="border border-white rounded-full h-6 w-6 p-1" />
-          <span className="text-sm flex items-center gap-1">
-            Hello, {name.split(" ")[0] || (isAdmin ? "Admin" : "Guest")} <IoIosArrowDown />
-          </span>
-        </div>
-      </PopoverHandler>
-      <PopoverContent
-        {...triggers}
-        className="z-50 max-w-[16rem] bg-white shadow-lg p-4 rounded-lg"
-      >
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <FaRegUser className="text-gray-600" />
-            <span className="font-semibold text-gray-800">
-              {name || "Guest"}
-            </span>
-          </div>
-          <hr className="border-gray-300" />
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <Link
-                to={"/my-orders"}
-                className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
-              >
-                <BiBasket className="text-gray-600" />
-                <span>My Orders</span>
-              </Link>
-              <IoIosArrowForward className="text-gray-400" />
+    <>
+      {!user.isAuthenticated ? (
+        <CustomButton
+          type={"normal"}
+          text="Login"
+          to="/auth"
+          onClick={""}
+          width={"full"}
+        />
+      ) : (
+        <Popover open={openPopover} handler={setOpenPopover}>
+          <PopoverHandler {...triggers}>
+            <div className="hidden lg:flex items-center gap-2 text-white">
+              <FaRegUser className="border border-white rounded-full h-6 w-6 p-1" />
+              <span className="text-sm flex items-center gap-1">
+                Hello, {name.split(" ")[0] || (isAdmin ? "Admin" : "Guest")}{" "}
+                <IoIosArrowDown />
+              </span>
             </div>
-            <div className="flex items-center justify-between">
-              <Link
-                to="/settings"
-                className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
-              >
-                <FaUserEdit className="text-gray-600" />
-                <span>Settings</span>
-              </Link>
-              <IoIosArrowForward className="text-gray-400" />
-            </div>
-            {isAdmin && (
-              <div className="flex items-center justify-between">
-                <Link to="/admin/dashboard" className="flex items-center gap-2 hover:text-blue-600 cursor-pointer">
-                  <RiAdminLine className="text-gray-600" />
-                  <span>Dashboard</span>
-                </Link>
-                <IoIosArrowForward className="text-gray-400" />
+          </PopoverHandler>
+          <PopoverContent
+            {...triggers}
+            className="z-50 max-w-[16rem] bg-white shadow-lg p-4 rounded-lg"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <FaRegUser className="text-gray-600" />
+                <span className="font-semibold text-gray-800">
+                  {name || "Guest"}
+                </span>
               </div>
-            )}
-            <hr className="w-[90%] mx-auto" />
-            <span
-              onClick={handleLogout}
-              className="cursor-pointer text-red-500 flex items-center gap-2"
-            >
-              <FaSignOutAlt className="text-red-500" /> Sign Out
-            </span>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+              <hr className="border-gray-300" />
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <Link
+                    to={"/my-orders"}
+                    className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
+                  >
+                    <BiBasket className="text-gray-600" />
+                    <span>My Orders</span>
+                  </Link>
+                  <IoIosArrowForward className="text-gray-400" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Link
+                    to="/settings"
+                    className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
+                  >
+                    <FaUserEdit className="text-gray-600" />
+                    <span>Settings</span>
+                  </Link>
+                  <IoIosArrowForward className="text-gray-400" />
+                </div>
+                {isAdmin && (
+                  <div className="flex items-center justify-between">
+                    <Link
+                      to="/admin/dashboard"
+                      className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
+                    >
+                      <RiAdminLine className="text-gray-600" />
+                      <span>Dashboard</span>
+                    </Link>
+                    <IoIosArrowForward className="text-gray-400" />
+                  </div>
+                )}
+                <hr className="w-[90%] mx-auto" />
+                <span
+                  onClick={handleLogout}
+                  className="cursor-pointer text-red-500 flex items-center gap-2"
+                >
+                  <FaSignOutAlt className="text-red-500" /> Sign Out
+                </span>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+      )}{" "}
+    </>
   );
 }
 export function MobileSidebar({ open, closeDrawer }) {
@@ -152,7 +170,7 @@ export function MobileSidebar({ open, closeDrawer }) {
         className="p-4"
       >
         <div className="mb-6 flex items-center justify-between">
-          <Logo />
+          <Logo black />
           <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +205,7 @@ export function MobileSidebar({ open, closeDrawer }) {
           </Link>
           <Link
             onClick={closeDrawer}
-            to="/account-management"
+            to="/settings"
             className="flex items-center gap-2 hover:text-blue-gray-800"
           >
             <FaUserCog />{" "}

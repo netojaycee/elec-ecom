@@ -59,7 +59,7 @@ export default function Auth() {
   React.useEffect(() => {
     if (isSuccessRegister) {
       toast.success("Register successful!");
-      navigate("/");
+      setIsSignUp(!isSignUp);
     } else if (isErrorRegister) {
       toast.error("Register failed");
       setErrors(errorRegister.data);

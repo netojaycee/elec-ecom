@@ -153,7 +153,12 @@ export function EditProduct({ handleOpen, setOpen, open, productItem }) {
   }, [editSuccess, editError]);
 
   return (
-    <Dialog size="md" open={open} handler={handleOpen}>
+    <Dialog
+      size="lg"
+      open={open}
+      handler={handleOpen}
+      className="overflow-y-auto max-h-screen"
+    >
       <DialogHeader>Edit Product</DialogHeader>
       <DialogBody>
         {errors && <p className="text-red-500 mb-3 text-sm">{errors}</p>}

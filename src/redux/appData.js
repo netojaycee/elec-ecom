@@ -210,7 +210,21 @@ export const productsApi = createApi({
         try {
           const response = await queryFulfilled;
         } catch (err) {
-          console.error("Reset Link send  failed:", err);
+          console.error("update failed:", err);
+        }
+      },
+    }),
+    editUserPassword: builder.mutation({
+      query: ({ credentials, id }) => ({
+        url: `/users/${id}/password`,
+        method: "PATCH",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          const response = await queryFulfilled;
+        } catch (err) {
+          console.error("update password  failed:", err);
         }
       },
     }),
@@ -246,7 +260,16 @@ export const productsApi = createApi({
 
           // Dispatch actions with decoded data
           dispatch(setCredentials({ token }));
-          dispatch(setUserInfo({ name, email, isAdmin, _id }));
+          dispatch(
+            setUserInfo({
+              name,
+              email,
+              isAdmin,
+              _id,
+              address: "",
+              phoneNumber: "",
+            })
+          );
 
           // console.log("Login successful:");
         } catch (err) {
@@ -415,6 +438,7 @@ export const {
   useForgotPassMutation,
   useResetPassMutation,
   useEditUserMutation,
+  useEditUserPasswordMutation,
   useRegisterMutation,
   useGetAllProductQuery,
   useGetAllCategoryQuery,

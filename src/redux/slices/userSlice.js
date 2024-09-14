@@ -4,6 +4,8 @@ const initialState = {
   _id: null,
   email: "",
   name: "",
+  address: "",
+  phoneNumber: "",
   isAdmin: null,
   isAuthenticated: false,
 };
@@ -15,6 +17,8 @@ const userSlice = createSlice({
     setUserInfo: (state, action) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
+      state.address = action.payload.address;
+      state.phoneNumber = action.payload.phoneNumber;
       state.isAdmin = action.payload.isAdmin;
       state._id = action.payload._id;
       state.isAuthenticated = true;
