@@ -41,8 +41,8 @@ export function ProfileInfo() {
   return (
     <Popover open={openPopover} handler={setOpenPopover}>
       <PopoverHandler {...triggers}>
-        <div className="hidden lg:flex items-center gap-2 text-white">
-          <FaRegUser className="border border-white rounded-full h-6 w-6 p-1" />
+        <div className="hidden lg:flex items-center gap-2 text-black">
+          <FaRegUser className="border border-black rounded-full h-6 w-6 p-1" />
           <span className="text-sm flex items-center gap-1">
             Hello, {name || "Guest"} <IoIosArrowDown />
           </span>
@@ -106,8 +106,8 @@ export function ProfileInfo() {
 
 export default function Header() {
   return (
-<div className="bg-white h-[60px] fixed top-0 w-full p-3 flex items-end justify-between">
-    kn
+<div className="bg-white h-[60px] sticky top-0 w-full p-3 pr-5 flex justify-end ">
+
       <ProfileInfo />
     </div>
   );

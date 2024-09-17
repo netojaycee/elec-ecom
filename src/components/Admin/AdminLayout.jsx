@@ -9,7 +9,7 @@ export default function AdminLayout() {
       <Sidebar />
       <div className="flex flex-col w-full">
         <Header />
-        <main className="pt-[90px] p-8 w-full overflow-auto">
+        <main className="pt-[20px] p-8 w-full overflow-auto">
           <Outlet />
         </main>
       </div>

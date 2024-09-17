@@ -42,9 +42,8 @@ import { persistor } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "./CustomButton";
 
-export function ProfileInfo() {
+export function ProfileInfo({user}) {
   const [openPopover, setOpenPopover] = React.useState(false);
-  const user = useSelector((state) => state.user); // Get user state from Redux
 
   const { name, email, isAdmin } = user; // Destructure name and email from user
   const [logout] = useLogoutMutation();
@@ -82,7 +81,7 @@ export function ProfileInfo() {
             <div className="hidden lg:flex items-center gap-2 text-white">
               <FaRegUser className="border border-white rounded-full h-6 w-6 p-1" />
               <span className="text-sm flex items-center gap-1">
-                Hello, {name.split(" ")[0] || (isAdmin ? "Admin" : "Guest")}{" "}
+                Hello, {name.split(" ")[0]}
                 <IoIosArrowDown />
               </span>
             </div>
@@ -147,7 +146,7 @@ export function ProfileInfo() {
     </>
   );
 }
-export function MobileSidebar({ open, closeDrawer }) {
+export function MobileSidebar({ open, closeDrawer, user }) {
   const { data: categories } = useGetAllCategoryQuery();
   const [logout, { isLoading, isError }] = useLogoutMutation(); // Destructure logout function and status
   const navigate = useNavigate();
@@ -208,11 +207,23 @@ export function MobileSidebar({ open, closeDrawer }) {
             to="/settings"
             className="flex items-center gap-2 hover:text-blue-gray-800"
           >
-            <FaUserCog />{" "}
-            <Typography color="gray">Account Management</Typography>
+            <FaUserCog /> <Typography color="gray">Settings</Typography>
           </Link>
 
           <hr className="border-gray-300 my-2" />
+          {user && user.isAdmin && (
+            // <div className="flex items-center justify-between">
+            <Link
+              onClick={closeDrawer}
+              to="/admin/dashboard"
+              className="flex items-center gap-2 hover:text-blue-600 cursor-pointer"
+            >
+              <RiAdminLine className="text-gray-600" />
+              <span>Dashboard</span>
+            </Link>
+            // <IoIosArrowForward className="text-gray-400" />
+            // </div>
+          )}
           <div className="flex items-center gap-2 text-gray-500">
             <Typography color="gray" className="opacity-70">
               Product Categories
@@ -235,13 +246,23 @@ export function MobileSidebar({ open, closeDrawer }) {
           </div>
 
           <hr className="border-gray-300 my-2" />
-          <span
-            onClick={handleLogout}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <FaSignOutAlt className="text-red-400" />
-            <Typography color="red">Sign Out</Typography>
-          </span>
+          {!user.isAuthenticated ? (
+            <CustomButton
+              type={"normal"}
+              text="Login"
+              to="/auth"
+              onClick={""}
+              width={"full"}
+            />
+          ) : (
+            <span
+              onClick={handleLogout}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <FaSignOutAlt className="text-red-400" />
+              <Typography color="red">Sign Out</Typography>
+            </span>
+          )}
         </nav>
       </Drawer>
     </React.Fragment>
@@ -253,6 +274,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const [openSearch, setOpenSearch] = React.useState(false);
+  const user = useSelector((state) => state.user); // Get user state from Redux
 
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
@@ -360,7 +382,7 @@ export default function Header() {
               <span className="text-sm">Saved Items</span>
             </Link>
 
-            <ProfileInfo />
+            <ProfileInfo user={user} />
 
             <div className="flex lg:hidden items-center gap-2 text-white">
               <RiMenu3Line
@@ -424,6 +446,7 @@ export default function Header() {
         setOpen={setOpen}
         openDrawer={openDrawer}
         closeDrawer={closeDrawer}
+        user={user}
       />
     </>
   );

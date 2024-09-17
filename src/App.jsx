@@ -32,8 +32,8 @@ import AddProduct from "./pages/Admin/Products/AddProduct";
 import AllProducts from "./pages/Admin/Products/AllProducts";
 import AllCategory from "./pages/Admin/Category/AllCategory";
 import AddCategory from "./pages/Admin/Category/AddCategory";
-import OrderDetailsAdmin from "./pages/Admin/Orders/OrderDetailsAdmin";
 import AllOrders from "./pages/Admin/Orders/AllOrders";
+import OrderDet from "./pages/Admin/Orders/OrderDet";
 import { jwtDecode } from "jwt-decode";
 import { setUserInfo } from "./redux/slices/userSlice";
 
@@ -77,6 +77,7 @@ function App() {
           <Route path="/all-categories/:slug" element={<Products />} />
           <Route path="/all-categories" element={<Categories />} />
           <Route path="/search/:slug" element={<SearchPage />} />
+
           {/* user routes */}
           <Route path="/" element={<Protected />}>
             <Route path="/my-orders" element={<MyOrders />} />
@@ -90,8 +91,8 @@ function App() {
         </Route>
         {/* admin routes */}
         <Route
-          path="admin"
-          element={isAdmin ? <AdminLayout /> : <Navigate to="/" />}
+          path="/admin"
+          element={isAdmin && isAdmin ? <AdminLayout /> : <Navigate to="/" />}
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="all-product" element={<AllProducts />} />
@@ -99,7 +100,7 @@ function App() {
           <Route path="all-category" element={<AllCategory />} />
           <Route path="add-category" element={<AddCategory />} />
           <Route path="all-order" element={<AllOrders />} />
-          <Route path="order-detail" element={<OrderDetailsAdmin />} />
+          <Route path="order-detail/:slug" element={<OrderDet />} />
         </Route>
         <Route
           path="/auth"

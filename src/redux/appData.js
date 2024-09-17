@@ -18,7 +18,7 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
-  
+
   // Custom response handler to handle text responses
   async responseHandler(response) {
     const text = await response.text();
@@ -33,7 +33,7 @@ const baseQuery = fetchBaseQuery({
 export const productsApi = createApi({
   reducerPath: "products",
   baseQuery,
-  tagTypes: ["Category", "Product"],
+  tagTypes: ["Category", "Product", "AdminOrders", "UserOrders"],
   endpoints: (builder) => ({
     getAllProduct: builder.query({
       query: () => "/products",
@@ -42,6 +42,14 @@ export const productsApi = createApi({
     getAllCategory: builder.query({
       query: () => "/categories",
       providesTags: ["Category"],
+    }),
+    getAllUserOrders: builder.query({
+      query: (id) => `/my-orders/${id}`,
+      providesTags: ["UserOrders"],
+    }),
+    getAllOrders: builder.query({
+      query: () => `/orders/`,
+      providesTags: ["AdminOrders"],
     }),
     //     getOneProduct: builder.query({
     //       query: (id) => `products/${id}`,
@@ -113,6 +121,23 @@ export const productsApi = createApi({
         }
       },
       invalidatesTags: ["Product"],
+    }),
+    payment: builder.mutation({
+      query: (credentials) => ({
+        url: `paystack/pay`,
+        method: "POST",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          console.error("failed to pay for service:", err);
+        }
+      },
+    }),
+    getVerifyPayment: builder.query({
+      query: (reference) => `paystack/verify/${reference}`,
     }),
     //     updateProduct: builder.mutation({
     //       query: ({ id, updatedProduct }) => ({
@@ -442,13 +467,17 @@ export const {
   useEditUserPasswordMutation,
   useRegisterMutation,
   useGetAllProductQuery,
+  useGetVerifyPaymentQuery,
   useGetAllCategoryQuery,
+  useGetAllUserOrdersQuery,
+  useGetAllOrdersQuery,
   useAddCategoryMutation,
   useEditCategoryMutation,
   useAddProductMutation,
   useEditProductMutation,
 
   useLogoutMutation,
+  usePaymentMutation,
   // useGenerateAiClinicalNoteMutation,
   // useAddNoteMutation,
   // useEditNoteMutation,
