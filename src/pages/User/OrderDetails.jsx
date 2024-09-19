@@ -1,20 +1,56 @@
-
 import CustomButton from "@/components/CustomButton";
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/slices/cartSlice";
+// import { useDispatch } from "react-redux";
+// import { addToCart } from "../../redux/slices/cartSlice";
+import React from "react";
+import { toast } from "react-toastify";
+import { useMarkOrderMutation } from "../../redux/appData";
+import { Spinner } from "@material-tailwind/react";
 
 export default function OrderDetails() {
   const location = useLocation();
-  const dispatch = useDispatch();
-  const { order } = location.state;
-  // console.log(order);
+  // const dispatch = useDispatch();
+  const { order: initialOrder } = location.state;
+  const [order, setOrder] = React.useState(initialOrder);
+  const [delStatus, setDelStatus] = React.useState("");
+
+  console.log(order);
 
   const itemCount = order.products.length;
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+  // const handleAddToCart = (product) => {
+  //   dispatch(addToCart(product));
+  // };
+
+  const [markOrder, { isLoading: isMarkOrderLoading, isSuccess, isError }] =
+    useMarkOrderMutation();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const credentials = {
+        deliveryStatus: delStatus,
+      };
+      // console.log(credentials);
+
+      await markOrder({ credentials, id: order._id });
+    } catch (error) {
+      // console.error(error);
+    }
   };
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        deliveryStatus: delStatus, // Update order in state
+      }));
+      toast.success("Status updated successfully!");
+    } else if (isError) {
+      toast.error("status update failed");
+    }
+  }, [isSuccess, isError, delStatus]);
   return (
     <>
       {order && (
@@ -32,25 +68,46 @@ export default function OrderDetails() {
                   <p className="font-bold 2xl:text-2xl">
                     Total:{" "}
                     <span className="font-bold">
-                      N
-                      {order.products.reduce(
-                        (acc, product) =>
-                          acc + product.price * product.quantity,
-                        0
-                      )}
+                      <span className="font-serif">&#8358;</span>
+                      {order.amount}
                     </span>
                   </p>
                 </div>
-                <div>
-                  
+                <div className="flex flex-col gap-3">
                   <button
                     className={`${
-                      order.deliveryStatus === "pending" ? "bg-red-400" : "bg-green-400"
-                    } text-center text-xs p-2 lg:w-60`}
+                      order.deliveryStatus === "pending"
+                        ? "bg-red-400"
+                        : order.deliveryStatus === "dispatched"
+                        ? "bg-blue-400"
+                        : "bg-green-400"
+                    } text-center text-xs p-2 lg:w-60 cursor-default`}
                   >
                     {order.deliveryStatus}
                   </button>
                   {/* <CustomButton type="invoice" text="Download receipt" /> */}
+                  {order && order.deliveryStatus === "dispatched" && (
+                    <form
+                      onSubmit={handleSubmit}
+                      className="flex items-center gap-2"
+                    >
+                      <select
+                        className="border border-gray-600 p-2 rounded-md w-[60%]"
+                        value={delStatus}
+                        onChange={(e) => setDelStatus(e.target.value)}
+                      >
+                        <option disabled value="">
+                          Mark as Recieved
+                        </option>
+                        {/* <option value="dispatched">Dispatched</option> */}
+                        <option value="delivered">Recieved</option>
+                      </select>
+                      <CustomButton
+                        text={isMarkOrderLoading ? <Spinner /> : "proceed"}
+                        type={"normal"}
+                      />
+                    </form>
+                  )}
                 </div>
               </div>
 
@@ -78,13 +135,13 @@ export default function OrderDetails() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center md:w-[60%] w-full justify-end">
+                  {/* <div className="flex items-center md:w-[60%] w-full justify-end">
                     <CustomButton
                       type="cart"
                       text="Buy Again"
                       onClick={() => handleAddToCart(product)}
                     />
-                  </div>
+                  </div> */}
                 </div>
               ))}
 
@@ -99,27 +156,27 @@ export default function OrderDetails() {
                       <span className="font-serif">&#8358;</span>
                       {order.products.reduce(
                         (acc, product) =>
-                          acc + product.price * product.quantity,
+                          acc + product.price * product.cartQuantity,
                         0
                       )}
                     </span>
                   </p>
                   <p className="2xl:text-xl">
-                    {/* Delivery Fee:
+                    Delivery Fee:
                     <span className="font-bold">
-                      <span className="font-serif">&#8358;</span>800
-                    </span> */}
+                      <span className="font-serif">&#8358;</span>{order.amount - order.products.reduce(
+                        (acc, product) =>
+                          acc + product.price * product.cartQuantity,
+                        0
+                      )}
+                    </span>
                   </p>
                   <hr className="w-[90%] mx-auto border my-2" />
                   <p className="2xl:text-xl">
                     Total:
                     <span className="font-bold text-2xl">
                       <span className="font-serif">&#8358;</span>
-                      {order.products.reduce(
-                        (acc, product) =>
-                          acc + product.price * product.quantity,
-                        0
-                      )}
+                      {order.amount}
                     </span>
                   </p>
                 </div>

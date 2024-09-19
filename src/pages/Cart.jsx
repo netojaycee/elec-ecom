@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import productImage from "@/assets/images/product1.png";
+import { useEffect } from "react";
+
 import nocart from "@/assets/images/nocart.png";
 import { BiTrashAlt } from "react-icons/bi";
 import CustomButton from "@/components/CustomButton";
@@ -7,7 +7,7 @@ import { PiMinusCircleFill, PiPlusCircleFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import {
   addToCart,
-  clearCart,
+  // clearCart,
   decreaseCartQuantity,
   getTotals,
   removeFromCart,
@@ -18,7 +18,6 @@ import { BsArrowRight } from "react-icons/bs";
 export default function Cart() {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,9 +33,9 @@ export default function Cart() {
   const handleAddToCart = (cartItem) => {
     dispatch(addToCart(cartItem));
   };
-  const handleClearCart = () => {
-    dispatch(clearCart());
-  };
+  // const handleClearCart = () => {
+  //   dispatch(clearCart());
+  // };
 
   const handleCheckout = () => {
     navigate("/checkout", {
@@ -58,8 +57,11 @@ export default function Cart() {
             </div>
 
             <div className="flex flex-col">
-              {cart.cartItems?.map((cartItem) => (
-                <div className="flex flex-col md:flex-row md:items-center w-full mt-2 border border-gray-300 p-2 md:p-4 rounded-md gap-3 md:gap-10">
+              {cart.cartItems?.map((cartItem, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col md:flex-row md:items-center w-full mt-2 border border-gray-300 p-2 md:p-4 rounded-md gap-3 md:gap-10"
+                >
                   <div className="flex md:w-[60%] w-full justify-between md:justify-start items-center">
                     <div className="text-sm font-normal flex items-center gap-4 lg:gap-10 w-full">
                       <img

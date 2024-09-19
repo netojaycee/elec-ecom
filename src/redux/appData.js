@@ -189,9 +189,29 @@ export const productsApi = createApi({
         method: "PATCH",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { queryFulfilled }) => {
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled;
+          const response = await queryFulfilled;
+          const token = response.data.token; // Assuming the response data is the JWT
+// console.log(response.data.token)
+          const decodedToken = jwtDecode(token);
+
+          // Extract required fields from the decoded token
+          const { name, email, isAdmin, _id, phoneNumber, address } =
+            decodedToken;
+
+          // Dispatch actions with decoded data
+          dispatch(setCredentials({ token }));
+          dispatch(
+            setUserInfo({
+              name,
+              email,
+              isAdmin,
+              _id,
+              address,
+              phoneNumber,
+            })
+          );
         } catch (err) {
           // console.error("update failed:", err);
         }
@@ -319,6 +339,21 @@ export const productsApi = createApi({
       },
       invalidatesTags: ["Category"],
     }),
+    deleteOrders: builder.mutation({
+      query: (id) => ({
+        url: `orders/${id}`,
+        method: "DELETE",
+        // body: credentials,
+      }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("fetch failed:", err);
+        }
+      },
+      invalidatesTags: ["AdminOrders", "UserOrders"],
+    }),
     deleteProduct: builder.mutation({
       query: (credentials) => ({
         url: `products/${credentials}`,
@@ -361,5 +396,6 @@ export const {
   usePaymentMutation,
 
   useDeleteCategoryMutation,
+  useDeleteOrdersMutation,
   useDeleteProductMutation,
 } = productsApi;

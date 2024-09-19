@@ -8,11 +8,11 @@ import { Spinner } from "@material-tailwind/react";
 
 export default function OrderDet() {
   const location = useLocation();
-  const { order } = location.state;
+  const { order: initialOrder } = location.state;
+  const [order, setOrder] = React.useState(initialOrder);
   const [delStatus, setDelStatus] = React.useState("");
-  const [markOrder, { isLoading, isSuccess, isError, error }] =
-    useMarkOrderMutation();
-
+  const [markOrder, { isLoading, isSuccess, isError }] = useMarkOrderMutation();
+  // console.log(order);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,12 +30,15 @@ export default function OrderDet() {
 
   React.useEffect(() => {
     if (isSuccess) {
-      // order.deliveryStatus = delStatus;
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        deliveryStatus: delStatus, // Update order in state
+      }));
       toast.success("Status updated successfully!");
     } else if (isError) {
       toast.error("status update failed");
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError, delStatus]);
 
   return (
     <>
@@ -80,13 +83,13 @@ export default function OrderDet() {
                 <LuUserCircle2 className="w-6 h-6" /> Customer&apos;s Info
               </p>
               <p className="text-gray-600/70">
-                Name: <span className="text-black">John Doe</span>
+                Name: <span className="text-black">{order.name}</span>
               </p>
               <p className="text-gray-600/70">
-                Email: <span className="text-black">Johndoe@gmail.com</span>
+                Email: <span className="text-black">{order.email}</span>
               </p>
               <p className="text-gray-600/70">
-                Phone: <span className="text-black">+234595058754</span>
+                Phone: <span className="text-black">{order.phoneNumber}</span>
               </p>
               <p className="text-gray-600/70">
                 Delivery Address:{" "}

@@ -33,7 +33,7 @@ export default function ForgotPass() {
       toast.error("resent link send failed");
       setErrors(error.data);
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError, error]);
 
   return (
     <div className="flex items-center justify-center bg-gray-300 min-h-screen">

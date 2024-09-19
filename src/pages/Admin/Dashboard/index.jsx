@@ -6,9 +6,12 @@ import {
 import { Spinner } from "@material-tailwind/react";
 
 export default function Dashboard() {
-  const { data: orders = [], isLoading } = useGetAllOrdersQuery();
-  const { data: users = [], isLoading: isLoadingUsers } =
-    useGetAllUsersQuery();
+  const { data: allOrders = [], isLoading } = useGetAllOrdersQuery();
+  const orders =
+    (allOrders &&
+      allOrders.filter((order) => order.paymentStatus === "paid")) ||
+    [];
+  const { data: users = [], isLoading: isLoadingUsers } = useGetAllUsersQuery();
   return (
     <>
       <div className="grid grid-cols-2 gap-5 ">
@@ -33,7 +36,9 @@ export default function Dashboard() {
             <p className="text-xs font-normal w-[10%]">Order ID</p>
             <p className="text-xs font-normal w-[15%] ml-4">Product(s)</p>
             <p className="text-xs font-normal w-[11%]">Date</p>
-            <p className="text-xs font-normal w-[13%] ml-5 lg:ml-3">Items no.</p>
+            <p className="text-xs font-normal w-[13%] ml-5 lg:ml-3">
+              Items no.
+            </p>
             <p className="text-xs font-normal w-[14%]">Total Amount</p>
             <p className="text-xs font-normal w-[18%] ml-3">Payment Status</p>
 

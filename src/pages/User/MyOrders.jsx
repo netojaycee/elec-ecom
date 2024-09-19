@@ -1,4 +1,3 @@
-import React from "react";
 import productImage from "@/assets/images/product1.png";
 import nocart from "@/assets/images/nocart.png";
 import CustomButton from "@/components/CustomButton";
@@ -7,23 +6,30 @@ import { FaAngleRight } from "react-icons/fa6";
 import { useGetAllUserOrdersQuery } from "../../redux/appData";
 import { useSelector } from "react-redux";
 import { BsArrowRight } from "react-icons/bs";
-import {
-  Spinner
-} from "@material-tailwind/react";
-
+import { Spinner } from "@material-tailwind/react";
 
 export default function MyOrders() {
   const user = useSelector((state) => state.user); // Get user state from Redux
   const { _id } = user;
 
-  const { data: orders, isLoading } = useGetAllUserOrdersQuery(_id);
+  const { data: allOrders, isLoading } = useGetAllUserOrdersQuery(_id);
   // console.log(orders);
+  const orders =
+    (allOrders &&
+      allOrders.filter((order) => order.paymentStatus === "paid")) ||
+    [];
+  // console.log(orders);
+
   const navigate = useNavigate();
   const handleClickOrder = (order) => {
     navigate(`/my-orders/${order._id}`, { state: { order } });
   };
-  if(isLoading) {
-    return <div className="h-screen flex items-center justify-center"><Spinner /></div>
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
   return (
     <>
@@ -70,6 +76,8 @@ export default function MyOrders() {
                         className={`${
                           order.deliveryStatus === "pending"
                             ? "bg-red-400"
+                            : order.deliveryStatus === "dispatched"
+                            ? "bg-blue-400"
                             : "bg-green-400"
                         } text-center text-xs p-2`}
                       >
@@ -101,7 +109,7 @@ export default function MyOrders() {
             No Orders available
           </h2>
           <p className="text-center md:text-sm lg:text-lg font-normal mt-2">
-            Looks like you haven’t added anything to your cart yet
+            Looks like you haven&apos;t added anything to your cart yet
           </p>
           <CustomButton
             type={"contact"}

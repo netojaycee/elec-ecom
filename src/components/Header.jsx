@@ -207,7 +207,7 @@ export function MobileSidebar({ open, closeDrawer, user }) {
           </Link>
 
           <hr className="border-gray-300 my-2" />
-          {user && user.isAdmin && (
+          {user && user?.isAdmin && (
             // <div className="flex items-center justify-between">
             <Link
               onClick={closeDrawer}
@@ -453,7 +453,7 @@ ProfileInfo.propTypes = {
   user: PropTypes.shape({
     isAuthenticated: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
+    isAdmin: PropTypes.bool,
   }).isRequired,
 };
 
@@ -462,7 +462,7 @@ MobileSidebar.propTypes = {
   closeDrawer: PropTypes.func.isRequired,
   user: PropTypes.shape({
     isAuthenticated: PropTypes.bool.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
+    isAdmin: PropTypes.bool,
   }).isRequired,
 };
 
