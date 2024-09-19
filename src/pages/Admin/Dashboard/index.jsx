@@ -1,19 +1,29 @@
 import React from "react";
-import { useGetAllOrdersQuery } from "../../../redux/appData";
+import {
+  useGetAllOrdersQuery,
+  useGetAllUsersQuery,
+} from "../../../redux/appData";
+import { Spinner } from "@material-tailwind/react";
 
 export default function Dashboard() {
   const { data: orders = [], isLoading } = useGetAllOrdersQuery();
+  const { data: users = [], isLoading: isLoadingUsers } =
+    useGetAllUsersQuery();
   return (
     <>
       <div className="grid grid-cols-2 gap-5 ">
         <div className="bg-white p-5 shadow-md rounded-md">
           <p className="text-sm">Total Customers</p>
-          <p className="font-bold text-3xl">30000</p>
+          <p className="font-bold text-3xl">
+            {isLoadingUsers ? <Spinner /> : users.length}
+          </p>
         </div>
 
         <div className="bg-white p-5 shadow-md rounded-md">
           <p className="text-sm">Total Orders</p>
-          <p className="font-bold text-3xl">30000</p>
+          <p className="font-bold text-3xl">
+            {isLoading ? <Spinner /> : orders.length}
+          </p>
         </div>
       </div>
 
@@ -21,18 +31,19 @@ export default function Dashboard() {
         <div className="min-w-[600px]">
           <div className="flex items-center w-full px-4 py-2 bg-white rounded-lg mb-4">
             <p className="text-xs font-normal w-[10%]">Order ID</p>
-            <p className="text-xs font-normal w-[15%]">Product(s)</p>
+            <p className="text-xs font-normal w-[15%] ml-4">Product(s)</p>
             <p className="text-xs font-normal w-[11%]">Date</p>
-            <p className="text-xs font-normal w-[13%]">Items no.</p>
+            <p className="text-xs font-normal w-[13%] ml-5 lg:ml-3">Items no.</p>
             <p className="text-xs font-normal w-[14%]">Total Amount</p>
-            <p className="text-xs font-normal w-[20%]">Payment Status</p>
+            <p className="text-xs font-normal w-[18%] ml-3">Payment Status</p>
 
-            <p className="text-xs font-normal w-[12%]">Del. Status</p>
-            <p className="text-xs font-normal w-[5%]"></p>
+            <p className="text-xs font-normal w-[15%] ml-4">Del. Status</p>
           </div>
           <div className="flex flex-col gap-3">
-            {orders &&
-              orders.slice(1, 5).map((order, orderIndex) => (
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              orders.slice(0, 5).map((order, orderIndex) => (
                 <div
                   key={order._id}
                   className="flex items-center w-full px-4 py-2 bg-white rounded-lg"
@@ -43,13 +54,13 @@ export default function Dashboard() {
                       : order._id}
                   </p>
 
-                  <p className="text-sm font-normal w-[15%] line-clamp-2">
+                  <p className="text-sm font-normal w-[15%] line-clamp-2 ml-4">
                     {order.products.map((product) => product.name).join(", ")}
                   </p>
                   <p className="text-sm font-normal w-[11%]">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </p>
-                  <p className="text-sm font-normal w-[13%]">
+                  <p className="text-sm font-normal w-[13%] lg:ml-3 ml-5">
                     {order.products.reduce(
                       (total, product) => total + product.cartQuantity,
                       0
@@ -61,7 +72,7 @@ export default function Dashboard() {
                     {/* {order.products.reduce((total, product) => total + (product.price * product.cartQuantity), 0).toLocaleString()} */}
                   </p>
                   <p
-                    className={`text-sm font-normal w-[15%] mr-4 p-1 rounded-lg text-center ${
+                    className={`text-sm font-normal w-[18%] ml-3 p-1 rounded-lg text-center ${
                       order.paymentStatus === "paid"
                         ? "bg-green-400"
                         : "bg-red-400"
@@ -71,7 +82,7 @@ export default function Dashboard() {
                   </p>
 
                   <p
-                    className={`text-sm font-normal w-[10%] p-1 rounded-lg text-center ${
+                    className={`text-sm font-normal ml-4 w-[15%] p-1 rounded-lg text-center ${
                       order.deliveryStatus === "dispatched"
                         ? "bg-blue-400"
                         : order.deliveryStatus === "pending"
@@ -90,7 +101,8 @@ export default function Dashboard() {
                     </div>
                   </p> */}
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </div>
       </div>

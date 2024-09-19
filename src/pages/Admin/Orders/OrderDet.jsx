@@ -1,17 +1,46 @@
 import React from "react";
 import { LuUserCircle2 } from "react-icons/lu";
 import CustomButton from "../../../components/CustomButton";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useMarkOrderMutation } from "../../../redux/appData";
+import { Spinner } from "@material-tailwind/react";
 
 export default function OrderDet() {
-  const navigate = useNavigate();
   const location = useLocation();
   const { order } = location.state;
-  console.log(order);
+  const [delStatus, setDelStatus] = React.useState("");
+  const [markOrder, { isLoading, isSuccess, isError, error }] =
+    useMarkOrderMutation();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const credentials = {
+        deliveryStatus: delStatus,
+      };
+      // console.log(credentials);
+
+      await markOrder({ credentials, id: order._id });
+    } catch (error) {
+      // console.error(error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      // order.deliveryStatus = delStatus;
+      toast.success("Status updated successfully!");
+    } else if (isError) {
+      toast.error("status update failed");
+    }
+  }, [isSuccess, isError]);
+
   return (
     <>
       {order && (
-        <form className="" onSubmit={""}>
+        <form className="" onSubmit={handleSubmit}>
           <div className="bg-white p-5 mt-5 rounded-md shadow-md shadow-gray-400 flex items-center justify-between">
             <div className="flex flex-col">
               <p className="">Order ID: {order._id}</p>
@@ -33,10 +62,12 @@ export default function OrderDet() {
             <div className="">
               <select
                 className="border border-gray-300 p-2 rounded-md"
-                value=""
-                onChange={(e) => console.log(e.target.value)}
+                value={delStatus}
+                onChange={(e) => setDelStatus(e.target.value)}
               >
-                <option value="">Select Status</option>
+                <option disabled value="">
+                  Select Status
+                </option>
                 <option value="dispatched">Dispatched</option>
                 <option value="delivered">Delivered</option>
               </select>
@@ -107,7 +138,10 @@ export default function OrderDet() {
             </div>
           </div>
           <div className="flex w-full justify-end gap-5 items-center mt-5">
-            <CustomButton text={"proceed"} type={"normal"} />
+            <CustomButton
+              text={isLoading ? <Spinner /> : "proceed"}
+              type={"normal"}
+            />
             <CustomButton type={"back"} text={"Back"} to="/admin/all-order" />
           </div>
         </form>

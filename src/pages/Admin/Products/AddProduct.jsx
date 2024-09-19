@@ -53,7 +53,7 @@ export default function AddProduct() {
       );
       return response.data.secure_url; // Return the secure URL of the uploaded file
     } catch (error) {
-      console.error("Error uploading file:", error);
+      // console.error("Error uploading file:", error);
       throw new Error("Failed to upload file to Cloudinary");
     }
   };
@@ -64,7 +64,7 @@ export default function AddProduct() {
 
     const requiredFields = [name, description, category, price, quantity];
     const hasEmptyField = requiredFields.some(field => !field);
-    console.log(requiredFields)
+    // console.log(requiredFields)
 
     if (hasEmptyField || images.length !== 4) {
         toast.error("All fields are required and exactly four images must be uploaded.");
@@ -76,7 +76,7 @@ export default function AddProduct() {
     try {
       const uploadPromises = images.map((image) => uploadFile(image));
       const imageUrls = await Promise.all(uploadPromises);
-      console.log(imageUrls);
+      // console.log(imageUrls);
 
       const productData = {
         name,
@@ -86,14 +86,14 @@ export default function AddProduct() {
         quantity,
         images: imageUrls, // Send the array of URLs to the backend
       };
-console.log(productData)
+// console.log(productData)
       await addProduct(productData);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
 
       setErrors(error.message || "Upload failed");
-      console.error(error);
+      // console.error(error);
     }
   };
 

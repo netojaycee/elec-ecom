@@ -2,16 +2,13 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { BsSearch } from "react-icons/bs";
 import { IoCart } from "react-icons/io5";
+import PropTypes from "prop-types";
 import {
   FaSave,
   FaShoppingCart,
   FaUserCog,
-  FaThList,
   FaSignOutAlt,
-  FaLightbulb,
-  FaPlug,
-  FaRegLightbulb,
-  FaToolbox,
+
   FaRegClock,
   FaHeart,
   FaRegUser,
@@ -39,13 +36,13 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { persistor } from "../redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import CustomButton from "./CustomButton";
 
 export function ProfileInfo({user}) {
   const [openPopover, setOpenPopover] = React.useState(false);
 
-  const { name, email, isAdmin } = user; // Destructure name and email from user
+  const { name, isAdmin } = user; // Destructure name and email from user
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
 
@@ -55,10 +52,10 @@ export function ProfileInfo({user}) {
       await persistor.purge();
       navigate("/auth");
     } catch (error) {
-      console.error("Logout failed:", error);
+      // console.error("Logout failed:", error);
     }
   };
-  console.log(user);
+  // console.log(user);
 
   const triggers = {
     onMouseEnter: () => setOpenPopover(true),
@@ -72,7 +69,6 @@ export function ProfileInfo({user}) {
           type={"normal"}
           text="Login"
           to="/auth"
-          onClick={""}
           width={"full"}
         />
       ) : (
@@ -148,7 +144,7 @@ export function ProfileInfo({user}) {
 }
 export function MobileSidebar({ open, closeDrawer, user }) {
   const { data: categories } = useGetAllCategoryQuery();
-  const [logout, { isLoading, isError }] = useLogoutMutation(); // Destructure logout function and status
+  const [logout] = useLogoutMutation(); // Destructure logout function and status
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
@@ -251,7 +247,6 @@ export function MobileSidebar({ open, closeDrawer, user }) {
               type={"normal"}
               text="Login"
               to="/auth"
-              onClick={""}
               width={"full"}
             />
           ) : (
@@ -450,4 +445,24 @@ export default function Header() {
       />
     </>
   );
+
+ 
 }
+
+ProfileInfo.propTypes = {
+  user: PropTypes.shape({
+    isAuthenticated: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
+    isAdmin: PropTypes.bool.isRequired,
+  }).isRequired,
+};
+
+MobileSidebar.propTypes = {
+  open: PropTypes.bool.isRequired,
+  closeDrawer: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    isAuthenticated: PropTypes.bool.isRequired,
+    isAdmin: PropTypes.bool.isRequired,
+  }).isRequired,
+};
+

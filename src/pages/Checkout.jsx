@@ -23,10 +23,17 @@ export default function Checkout() {
     email: email || "",
     pickup_address: address || "",
   });
-
   // Form validation state
   const [isFormValid, setIsFormValid] = useState(false);
-
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        phone: phoneNumber || "",
+        email: email || "",
+        pickup_address: address || "",
+      });
+    }
+  }, [user, phoneNumber, email, address]);
   // Redirect to the cart page if no cart data is found
   useEffect(() => {
     if (!cartData || !totalAmount) {
@@ -64,14 +71,14 @@ export default function Checkout() {
     try {
       setLoading(true);
       const credentials = {
-        amount: (totalAmount + deliveryFee),
+        amount: totalAmount + deliveryFee,
         email: formData.email, // Use the updated email from the form
         userId: _id,
         address: formData.pickup_address, // Use the updated address from the form
         products: cartData,
       };
 
-      console.log(credentials);
+      // console.log(credentials);
       const response = await payment(credentials);
       setLoading(false);
       // console.log(response.data.authorization_url)
@@ -80,7 +87,7 @@ export default function Checkout() {
         window.location.href = response.data.authorization_url;
       }
     } catch (error) {
-      console.error("Payment Error: ", error);
+      // console.error("Payment Error: ", error);
       setLoading(false);
     }
   };

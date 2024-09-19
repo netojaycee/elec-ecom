@@ -1,8 +1,7 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { IoCart } from "react-icons/io5";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import { BsArrowLeft } from "react-icons/bs";
 import { FiDownload } from "react-icons/fi";
 
 const ButtonTypes = {
@@ -13,7 +12,15 @@ const ButtonTypes = {
   INVOICE: "invoice",
 };
 
-const CustomButton = ({ type, text, width, onClick, Icon, to, ...props }) => {
+const CustomButton = ({
+  type = ButtonTypes.NORMAL,
+  text = "",
+  width = "",
+  onClick = null,
+  Icon,
+  to = null,
+  ...props
+}) => {
   const getClassNames = () => {
     switch (type) {
       case ButtonTypes.NORMAL:
@@ -70,11 +77,13 @@ const CustomButton = ({ type, text, width, onClick, Icon, to, ...props }) => {
       onClick={onClick}
       {...props}
     >
-      {type === ButtonTypes.BACK || type === ButtonTypes.CART || type ===ButtonTypes.INVOICE
+      {type === ButtonTypes.BACK ||
+      type === ButtonTypes.CART ||
+      type === ButtonTypes.INVOICE
         ? renderIcon()
         : null}
       {text}
-      {type === ButtonTypes.CONTACT  ? renderIcon() : null}
+      {type === ButtonTypes.CONTACT ? renderIcon() : null}
     </button>
   );
 
@@ -93,13 +102,7 @@ CustomButton.propTypes = {
   width: PropTypes.string,
   onClick: PropTypes.func,
   to: PropTypes.string,
-};
-
-CustomButton.defaultProps = {
-  text: "",
-  width: "",
-  onClick: null,
-  to: null,
+  Icon: PropTypes.elementType,
 };
 
 export default CustomButton;

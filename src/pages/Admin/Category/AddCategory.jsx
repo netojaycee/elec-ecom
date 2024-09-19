@@ -40,7 +40,7 @@ export default function AddCategory() {
       );
       return response.data.secure_url; // Return the secure URL of the uploaded file
     } catch (error) {
-      console.error("Error uploading file:", error);
+      // console.error("Error uploading file:", error);
       throw new Error("Failed to upload file to Cloudinary");
     }
   };
@@ -60,7 +60,7 @@ export default function AddCategory() {
     if (image) {
       try {
         imageUrl = await uploadFile(image);
-        console.log(imageUrl);
+        // console.log(imageUrl);
       } catch (error) {
         setErrors("Failed to upload image. Please try again.");
         return;
@@ -78,7 +78,7 @@ export default function AddCategory() {
       setIsLoading(false);
 
       setErrors(error.error.data);
-      console.error(error);
+      // console.error(error);
     }
   };
 

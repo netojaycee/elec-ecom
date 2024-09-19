@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 
 export function SidebarLinks() {
   return (
-    <List>
+    <List >
       <NavLink
         className={({ isActive }) =>
           `${

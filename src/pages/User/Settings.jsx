@@ -65,7 +65,7 @@ export default function Settings() {
     try {
       await editUser({ credentials, id });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -100,12 +100,12 @@ export default function Settings() {
     if (currentPassword) credentials.currentPassword = currentPassword;
     if (newPassword) credentials.newPassword = newPassword;
     if (confirmPassword) credentials.confirmPassword = confirmPassword;
-    console.log(credentials);
+    // console.log(credentials);
 
     try {
       await editUserPassword({ credentials, id });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

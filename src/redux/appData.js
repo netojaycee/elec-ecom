@@ -1,7 +1,5 @@
 // src/service/dummyData.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-import { useDispatch } from "react-redux";
 import { clearCredentials, setCredentials } from "./slices/authSlice";
 import { clearUserInfo } from "./slices/userSlice";
 import { setUserInfo } from "./slices/userSlice";
@@ -51,9 +49,10 @@ export const productsApi = createApi({
       query: () => `/orders/`,
       providesTags: ["AdminOrders"],
     }),
-    //     getOneProduct: builder.query({
-    //       query: (id) => `products/${id}`,
-    //     }),
+    getAllUsers: builder.query({
+      query: () => `/users/`,
+    }),
+
     addCategory: builder.mutation({
       query: (credentials) => ({
         url: "/category",
@@ -66,7 +65,7 @@ export const productsApi = createApi({
           // console.log("registered");
           await queryFulfilled;
         } catch (err) {
-          console.error("category add failed:", err);
+          // console.error("category add failed:", err);
         }
       },
       invalidatesTags: ["Category"],
@@ -83,7 +82,7 @@ export const productsApi = createApi({
           // console.log("registered");
           await queryFulfilled;
         } catch (err) {
-          console.error("category add failed:", err);
+          // console.error("category add failed:", err);
         }
       },
       invalidatesTags: ["Category"],
@@ -100,7 +99,7 @@ export const productsApi = createApi({
           // console.log("registered");
           await queryFulfilled;
         } catch (err) {
-          console.error("product add failed:", err);
+          // console.error("product add failed:", err);
         }
       },
       invalidatesTags: ["Product"],
@@ -117,10 +116,25 @@ export const productsApi = createApi({
           // console.log("registered");
           await queryFulfilled;
         } catch (err) {
-          console.error("product edit failed:", err);
+          // console.error("product edit failed:", err);
         }
       },
       invalidatesTags: ["Product"],
+    }),
+    markOrder: builder.mutation({
+      query: ({ credentials, id }) => ({
+        url: `orders/${id}`,
+        method: "PATCH",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("failed to update order status:", err);
+        }
+      },
+      invalidatesTags: ["UserOrders", "AdminOrders"],
     }),
     payment: builder.mutation({
       query: (credentials) => ({
@@ -132,70 +146,13 @@ export const productsApi = createApi({
         try {
           await queryFulfilled;
         } catch (err) {
-          console.error("failed to pay for service:", err);
+          // console.error("failed to pay for service:", err);
         }
       },
     }),
     getVerifyPayment: builder.query({
       query: (reference) => `paystack/verify/${reference}`,
     }),
-    //     updateProduct: builder.mutation({
-    //       query: ({ id, updatedProduct }) => ({
-    //         url: `products/${id}`,
-    //         method: "PUT",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: updatedProduct,
-    //       }),
-    //     }),
-    // getProfile: builder.query({
-    //   query: () => ({ url: "/profile", method: "GET" }),
-    //   async onQueryStarted(_, { dispatch, queryFulfilled }) {
-    //     try {
-    //       const { data } = await queryFulfilled;
-    //       dispatch(setUserInfo(data));
-    //     } catch (error) {
-    //       console.error("Failed to fetch profile:", error);
-    //     }
-    //   },
-    // }),
-    // editProfile: builder.mutation({
-    //   query: (updatedProfile) => ({
-    //     url: `edit_account`,
-    //     method: "POST",
-    //     body: updatedProfile,
-    //   }),
-    //   onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-    //     try {
-    //       const { data } = await queryFulfilled;
-    //       // const response = await queryFulfilled;
-
-    //       dispatch(setUserInfo(data));
-    //       console.log("update successful:", data);
-    //     } catch (err) {
-    //       console.error("update failed:", err);
-    //     }
-    //   },
-    // }),
-
-    // editWidgetConfig: builder.mutation({
-    //   query: (updatedConfig) => ({
-    //     url: `edit_widget_config`,
-    //     method: "POST",
-    //     body: updatedConfig,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-
-    //       // const { data } = await queryFulfilled;
-    //       // console.log("update widget config successful:");
-    //     } catch (err) {
-    //       console.error("save failed:", err);
-    //     }
-    //   },
-    // }),
 
     forgotPass: builder.mutation({
       query: (credentials) => ({
@@ -203,11 +160,11 @@ export const productsApi = createApi({
         method: "POST",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
-          const response = await queryFulfilled;
+          await queryFulfilled;
         } catch (err) {
-          console.error("Reset Link send  failed:", err);
+          // console.error("Reset Link send  failed:", err);
         }
       },
     }),
@@ -218,11 +175,11 @@ export const productsApi = createApi({
         method: "POST",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
-          const response = await queryFulfilled;
+          await queryFulfilled;
         } catch (err) {
-          console.error("Reset Link send  failed:", err);
+          // console.error("Reset Link send  failed:", err);
         }
       },
     }),
@@ -232,11 +189,11 @@ export const productsApi = createApi({
         method: "PATCH",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
-          const response = await queryFulfilled;
+          await queryFulfilled;
         } catch (err) {
-          console.error("update failed:", err);
+          // console.error("update failed:", err);
         }
       },
     }),
@@ -246,11 +203,11 @@ export const productsApi = createApi({
         method: "PATCH",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
-          const response = await queryFulfilled;
+          await queryFulfilled;
         } catch (err) {
-          console.error("update password  failed:", err);
+          // console.error("update password  failed:", err);
         }
       },
     }),
@@ -260,11 +217,11 @@ export const productsApi = createApi({
         method: "POST",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
-          const response = await queryFulfilled;
+          await queryFulfilled;
         } catch (err) {
-          console.error("Reset Link send  failed:", err);
+          // console.error("Reset Link send  failed:", err);
         }
       },
     }),
@@ -282,7 +239,8 @@ export const productsApi = createApi({
           const decodedToken = jwtDecode(token);
 
           // Extract required fields from the decoded token
-          const { name, email, isAdmin, _id } = decodedToken;
+          const { name, email, isAdmin, _id, phoneNumber, address } =
+            decodedToken;
 
           // Dispatch actions with decoded data
           dispatch(setCredentials({ token }));
@@ -292,14 +250,14 @@ export const productsApi = createApi({
               email,
               isAdmin,
               _id,
-              address: "",
-              phoneNumber: "",
+              address,
+              phoneNumber,
             })
           );
 
           // console.log("Login successful:");
         } catch (err) {
-          console.error("Login failed:", err);
+          // console.error("Login failed:", err);
         }
       },
     }),
@@ -310,7 +268,7 @@ export const productsApi = createApi({
         method: "POST",
         body: credentials,
       }),
-      onQueryStarted: async (arg, { queryFulfilled }) => {
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           // console.log("registered");
           const response = await queryFulfilled;
@@ -319,13 +277,16 @@ export const productsApi = createApi({
           const decodedToken = jwtDecode(token);
 
           // Extract required fields from the decoded token
-          const { name, email, isAdmin, _id } = decodedToken;
+          const { name, email, isAdmin, _id, address, phoneNumber } =
+            decodedToken;
 
           // Dispatch actions with decoded data
           dispatch(setCredentials({ token }));
-          dispatch(setUserInfo({ name, email, isAdmin, _id }));
+          dispatch(
+            setUserInfo({ name, email, isAdmin, _id, address, phoneNumber })
+          );
         } catch (err) {
-          console.error("Register failed:", err);
+          //   console.error("Register failed:", err);
         }
       },
     }),
@@ -338,86 +299,11 @@ export const productsApi = createApi({
           dispatch(clearCredentials());
           dispatch(clearUserInfo());
         } catch (err) {
-          console.error("Logout failed:", err);
+          // console.error("Logout failed:", err);
         }
       },
     }),
-    // getAllQuestionnaires: builder.query({
-    //   query: () => "categories",
-    // }),
-    // getAllClients: builder.query({
-    //   query: () => "clients",
-    // }),
 
-    // markAsHomeWork: builder.mutation({
-    //   query: ({ code, credential }) => ({
-    //     url: `/categories/${code}/mark_as_homework`,
-    //     method: "POST",
-    //     body: credential,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       console.error("Register failed:", err);
-    //     }
-    //   },
-    // }),
-    // generateAiClinicalNote: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: "get_ai_clinical_recommendation",
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       console.error("Text generate failed:", err);
-    //     }
-    //   },
-    // }),
-    // addNote: builder.mutation({
-    //   query: ({ client, credentials }) => ({
-    //     url: `clients/${client}/generate_client_clinical_recommendation_note`,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       console.error("Register failed:", err);
-    //     }
-    //   },
-    // }),
-    // getAllNotes: builder.mutation({
-    //   query: ({ client }) => ({
-    //     url: `clients/${client}/get_client_clinical_notes`,
-    //     method: "GET",
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       console.error("fetch failed:", err);
-    //     }
-    //   },
-    // }),
-    // editNote: builder.mutation({
-    //   query: ({ credentials }) => ({
-    //     url: `clients/${credentials.pk}/edit_client_clinical_notes`,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       console.error("fetch failed:", err);
-    //     }
-    //   },
-    // }),
     deleteCategory: builder.mutation({
       query: (credentials) => ({
         url: `categories/${credentials}`,
@@ -428,7 +314,7 @@ export const productsApi = createApi({
         try {
           await queryFulfilled;
         } catch (err) {
-          console.error("fetch failed:", err);
+          // console.error("fetch failed:", err);
         }
       },
       invalidatesTags: ["Category"],
@@ -443,7 +329,7 @@ export const productsApi = createApi({
         try {
           await queryFulfilled;
         } catch (err) {
-          console.error("fetch failed:", err);
+          // console.error("fetch failed:", err);
         }
       },
       invalidatesTags: ["Product"],
@@ -452,13 +338,6 @@ export const productsApi = createApi({
 });
 
 export const {
-  // useGetAllQuestionnairesQuery,
-  // useGetAllClientsQuery,
-  // useMarkAsHomeWorkMutation,
-  // useEditProfileMutation,
-  // useEditWidgetConfigMutation,
-  // useGetProfileQuery,
-  // useGetAllNotesMutation,
   useLoginMutation,
   useContactMutation,
   useForgotPassMutation,
@@ -471,16 +350,16 @@ export const {
   useGetAllCategoryQuery,
   useGetAllUserOrdersQuery,
   useGetAllOrdersQuery,
+  useGetAllUsersQuery,
   useAddCategoryMutation,
   useEditCategoryMutation,
   useAddProductMutation,
   useEditProductMutation,
 
   useLogoutMutation,
+  useMarkOrderMutation,
   usePaymentMutation,
-  // useGenerateAiClinicalNoteMutation,
-  // useAddNoteMutation,
-  // useEditNoteMutation,
+
   useDeleteCategoryMutation,
   useDeleteProductMutation,
 } = productsApi;

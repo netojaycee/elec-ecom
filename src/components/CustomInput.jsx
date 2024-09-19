@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // You can use any icon library
 
 const CustomInput = ({
-  label,
-  placeholder,
+  label = "",
+  placeholder = "",
   name,
   value,
   onChange,
-  type,
-  width,
-  textarea,
-  options,
+  type = "text",
+  width = "",
+  textarea = false,
+  options = [],
   ...props
 }) => {
   const [inputType, setInputType] = useState(type);
@@ -48,11 +48,12 @@ const CustomInput = ({
             className="block w-full pl-4 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             {...props}
           >
-            {options && options.map((option, index) => (
-              <option key={index} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+            {options &&
+              options.map((option, index) => (
+                <option key={index} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
           </select>
         ) : (
           <input
@@ -91,18 +92,9 @@ CustomInput.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired
+      label: PropTypes.string.isRequired,
     })
-  )
-};
-
-CustomInput.defaultProps = {
-  label: "",
-  placeholder: "",
-  type: "text",
-  width: "",
-  textarea: false,
-  options: []
+  ),
 };
 
 export default CustomInput;

@@ -166,18 +166,20 @@ export default function Products() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const isSearch = searchParams.get("search");
-  const searchResults = location.state?.SearchResults || [];
+  const searchResults = location.state?.SearchResults;
   const { slug } = useParams(); // Get the category slug from the URL
-  console.log(slug);
+  // console.log(slug);
 
   useEffect(() => {
     // Determine the products to use: search results, all products, or filtered by category
     let productsToUse = products;
 
     if (slug) {
-      productsToUse = products && products
-        .slice(0, 1)
-        .filter((product) => product.category.slug === slug);
+      productsToUse =
+        products &&
+        products
+          .slice(0, 1)
+          .filter((product) => product.category.slug === slug);
     } else if (isSearch && searchResults.length > 0) {
       productsToUse = searchResults; // Use search results if available
     }

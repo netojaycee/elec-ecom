@@ -33,7 +33,7 @@ export default function Contact() {
       await contact(credentials);
       // console.log(credentials);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -48,7 +48,7 @@ export default function Contact() {
       toast.error("failed to send message");
       setErrors(error.data);
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError, error]);
   return (
     <div className="flex 2xl:mt-10">
       <div className="md:relative w-[90%] mx-auto md:bg-black 2xl:w-[70%] flex rounded-md overflow-hidden shadow-lg">
@@ -102,7 +102,6 @@ export default function Contact() {
             <CustomButton
               type="contact"
               text={isLoading ? "Sending..." : "Send Message"}
-              onClick=""
               width=""
               Icon={BsArrowRight}
             />

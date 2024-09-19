@@ -1,6 +1,8 @@
 import React from "react";
-import { ImInstagram } from "react-icons/im";
+import { FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { FiFacebook } from "react-icons/fi";
+import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
@@ -14,10 +16,20 @@ export default function Footer() {
             <Link to="/contact-us">Contact</Link>
           </div>
           <div className="flex items-center gap-4 text-white">
-            <ImInstagram />
-            <ImInstagram />
-            <ImInstagram />
-            <ImInstagram />
+            <a href="" target="_blank" rel="noopener noreferrer">
+              {" "}
+              <FaInstagram />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61562272645038&mibextid=LQQJ4d"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FiFacebook />
+            </a>{" "}
+            <a href="" target="_blank" rel="noopener noreferrer">
+              <FaXTwitter />
+            </a>
           </div>
         </div>
         <hr className="w-full my-4 lg:hidden order-2 lg:order-2" />

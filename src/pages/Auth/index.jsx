@@ -17,10 +17,7 @@ export default function Auth() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -51,7 +48,7 @@ export default function Auth() {
       await register(credentials);
       // console.log(credentials);
     } catch (error) {
-      console.log("hello", errorRegister);
+      // console.log("hello", errorRegister);
       setErrors(errorRegister.error.data);
     }
   };
@@ -64,7 +61,7 @@ export default function Auth() {
       toast.error("Register failed");
       setErrors(errorRegister.data);
     }
-  }, [isSuccessRegister, isErrorRegister, navigate]);
+  }, [isSuccessRegister, isErrorRegister, navigate, errorRegister, isSignUp]);
 
   // if (isLoading) {
   //   return <Loader />;
@@ -93,7 +90,7 @@ export default function Auth() {
       await login(credentials);
       // console.log(credentials);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -105,7 +102,7 @@ export default function Auth() {
       toast.error("Login failed");
       setErrors(errorLogin.data);
     }
-  }, [isSuccessLogin, isErrorLogin, navigate]);
+  }, [isSuccessLogin, isErrorLogin, navigate, errorLogin]);
 
   // if (isLoading) {
   //   return <Loader />;
@@ -137,7 +134,7 @@ export default function Auth() {
             </p>
           ) : (
             <p className="text-center mb-4">
-              Don't have an account?
+              Don&apos;t have an account?
               <span
                 onClick={toggleForm}
                 className="text-primary cursor-pointer"
@@ -210,7 +207,6 @@ export default function Auth() {
                   : "Sign In"
               }
               width={"full"}
-              onClick={""}
             />
           </form>
           <p className="text-center mt-4"></p>

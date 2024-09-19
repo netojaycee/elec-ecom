@@ -29,11 +29,11 @@ export default function Landing() {
 
   useEffect(() => {
     if (isSuccessPayment) {
-      console.log("Payment verification successful:", paymentData);
+      // console.log("Payment verification successful:", paymentData);
       setSearchParams({}); // Clear search params after verification
       setIsModalOpen(true); // Open the modal on successful verification
     } else if (errorPayment) {
-      console.error("Error verifying payment:", errorPayment);
+      // console.error("Error verifying payment:", errorPayment);
     }
   }, [isSuccessPayment, errorPayment, paymentData, setSearchParams]);
   return (

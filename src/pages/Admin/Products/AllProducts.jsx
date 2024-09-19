@@ -140,7 +140,7 @@ export function EditProduct({ handleOpen, setOpen, open, productItem }) {
       setOpen(false);
     } catch (error) {
       setErrors(error.message || "Update failed");
-      console.error(error);
+      // console.error(error);
     }
   };
 
@@ -274,7 +274,7 @@ export default function AllProducts() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
   const { data: products = [] } = useGetAllProductQuery();
-  console.log(products);
+  // console.log(products);
   const [
     deleteProduct,
     {
@@ -302,7 +302,7 @@ export default function AllProducts() {
 
   const confirmDelete = async () => {
     // Add your delete logic here, e.g., using a mutation
-    console.log(productToDelete);
+    // console.log(productToDelete);
     await deleteProduct(productToDelete);
 
     setShowConfirmDelete(false);

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import CategoryCard from "../../components/CategoryCard";
 import Slider from "react-slick";
@@ -54,7 +53,7 @@ export default function Categories() {
     ],
   };
 
-  console.log(categories);
+  // console.log(categories);
 
   return (
     <>
@@ -72,7 +71,7 @@ export default function Categories() {
         <Slider {...settings}>
           {categories &&
             categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
+              <CategoryCard key={category._id} category={category} />
             ))}
         </Slider>
       </div>

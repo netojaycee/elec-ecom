@@ -1,4 +1,3 @@
-import React from "react";
 import CustomButton from "@/components/CustomButton";
 import orderImage from "@/assets/images/nocart.png"; // Replace with your actual image path
 import { CiDeliveryTruck } from "react-icons/ci";
@@ -39,7 +38,6 @@ export default function OrderConfirm() {
                 <CustomButton
                   type={"invoice"}
                   text={"Download receipt"}
-                  onClick=""
                   width="full"
                 />
               </div>

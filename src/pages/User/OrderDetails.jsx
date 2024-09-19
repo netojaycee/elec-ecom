@@ -1,9 +1,7 @@
-import React from "react";
-import productImage from "@/assets/images/product1.png"; // You may want to replace this with dynamic image rendering
-import nocart from "@/assets/images/nocart.png";
+
 import CustomButton from "@/components/CustomButton";
-import { Link, useLocation } from "react-router-dom";
-import { FaAngleRight } from "react-icons/fa6";
+import {  useLocation } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 
@@ -11,7 +9,7 @@ export default function OrderDetails() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { order } = location.state;
-  console.log(order);
+  // console.log(order);
 
   const itemCount = order.products.length;
   const handleAddToCart = (product) => {
@@ -44,6 +42,14 @@ export default function OrderDetails() {
                   </p>
                 </div>
                 <div>
+                  
+                  <button
+                    className={`${
+                      order.deliveryStatus === "pending" ? "bg-red-400" : "bg-green-400"
+                    } text-center text-xs p-2 lg:w-60`}
+                  >
+                    {order.deliveryStatus}
+                  </button>
                   {/* <CustomButton type="invoice" text="Download receipt" /> */}
                 </div>
               </div>
@@ -66,15 +72,7 @@ export default function OrderDetails() {
                       <p className="text-xs 2xl:text-xl text-black/60 font-normal line-clamp-3 w-full md:w-auto">
                         Order {order._id}
                       </p>
-                      <button
-                        className={`${
-                          order.status === "pending"
-                            ? "bg-red-400"
-                            : "bg-green-400"
-                        } text-center text-xs p-2`}
-                      >
-                        {order.status}
-                      </button>
+
                       <p className="text-xs text-black/60 font-normal line-clamp-3 w-full md:w-auto 2xl:text-xl">
                         On {order.createdAt.split("T")[0]}
                       </p>

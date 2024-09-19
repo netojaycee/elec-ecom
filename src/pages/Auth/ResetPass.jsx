@@ -10,8 +10,6 @@ export default function ResetPass() {
   const [errors, setErrors] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const { token } = useParams();
 
   const [resetPass, { isLoading, isSuccess, isError, error }] =
@@ -21,7 +19,7 @@ export default function ResetPass() {
     e.preventDefault();
     setErrors("");
     if (password !== confirmPassword) {
-      setErrors("Passwords do not match.");
+      setErrors({message:"Passwords do not match."});
       return;
     }
     try {
@@ -29,24 +27,25 @@ export default function ResetPass() {
         password,
         confirmPassword,
       };
-      await resetPass({ credentials, token });
+     await resetPass({ credentials, token });
       // console.log(credentials);
     } catch (error) {
-      console.log(error);
+      // console.log(error.data);
+      setErrors({message: "password Reset failed"});
     }
   };
   const navigate = useNavigate();
-  console.log(token);
+  // console.log(token);
 
   React.useEffect(() => {
     if (isSuccess) {
       toast.success("password Reset successful!");
       navigate("/auth");
     } else if (isError) {
-      toast.error("password Reset failed");
-      setErrors(error.data);
+      toast.error(error.data.error);
+      setErrors({message: error.data.error});
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError, error, navigate]);
   return (
     <div className="flex items-center justify-center bg-gray-300 min-h-screen">
       <div className="bg-white shadow-md flex rounded-md overflow-hidden w-[90%] lg:w-3/4 2xl:w-2/3 p-4 items-center">
@@ -64,7 +63,7 @@ export default function ResetPass() {
             onSubmit={handleResetPass}
             className="space-y-4 mx-auto w-[80%]"
           >
-            {/* {errors && <p className="text-red-500">{errors}</p>} */}
+            {errors && <p className="text-red-500">{errors.message}</p>}
             <CustomInput
               label="Password"
               name="password"
@@ -87,7 +86,6 @@ export default function ResetPass() {
               type={"normal"}
               text={isLoading ? "Resetting..." : "Reset password"}
               width={"full"}
-              onClick={""}
             />
           </form>
           <p className="text-center mt-4"></p>

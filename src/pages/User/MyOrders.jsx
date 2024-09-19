@@ -17,7 +17,7 @@ export default function MyOrders() {
   const { _id } = user;
 
   const { data: orders, isLoading } = useGetAllUserOrdersQuery(_id);
-  console.log(orders);
+  // console.log(orders);
   const navigate = useNavigate();
   const handleClickOrder = (order) => {
     navigate(`/my-orders/${order._id}`, { state: { order } });
@@ -68,12 +68,12 @@ export default function MyOrders() {
                       </p>
                       <button
                         className={`${
-                          order.status === "pending"
+                          order.deliveryStatus === "pending"
                             ? "bg-red-400"
                             : "bg-green-400"
                         } text-center text-xs p-2`}
                       >
-                        {order.status}
+                        {order.deliveryStatus}
                       </button>
                       <p className="text-xs mt-2 text-black/60 font-normal line-clamp-3 w-full md:w-auto">
                         On {order.createdAt.split("T")[0]}

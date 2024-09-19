@@ -65,7 +65,7 @@ export function EditCategory({ handleOpen, setOpen, open, categoryItem }) {
       setOpen(false);
     } catch (error) {
       setErrors(error.error.data);
-      console.error(error);
+      // console.error(error);
     }
   };
 

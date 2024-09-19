@@ -21,7 +21,7 @@ export default function ForgotPass() {
       await forgotPass(credentials);
       // console.log(credentials);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -69,7 +69,6 @@ export default function ForgotPass() {
               type={"normal"}
               text={isLoading ? "Loading" : "Request Link"}
               width={"full"}
-              onClick={""}
             />
           </form>
           <p className="text-center mt-4"></p>

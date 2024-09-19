@@ -51,12 +51,12 @@ function App() {
         const decodedToken = jwtDecode(token);
 
         // Extract required fields from the decoded token
-        const { name, email, isAdmin, _id } = decodedToken;
+        const { name, email, isAdmin, _id, address, phoneNumber } = decodedToken;
 
         // Dispatch the action to set user info in the state
-        dispatch(setUserInfo({ name, email, isAdmin, _id }));
+        dispatch(setUserInfo({ name, email, isAdmin, _id, address, phoneNumber }));
       } catch (error) {
-        console.error("Token decoding failed:", error);
+        // console.error("Token decoding failed:", error);
       }
     }
   }, [token, dispatch]);

@@ -13,6 +13,8 @@ import {
 } from "@material-tailwind/react";
 import { persistor } from "../../redux/store";
 import { useSelector } from "react-redux";
+import { CiMenuFries } from "react-icons/ci";
+import Sidebar, { SidebarLinks } from "./Sidebar";
 
 export function ProfileInfo() {
   const [openPopover, setOpenPopover] = React.useState(false);
@@ -29,7 +31,7 @@ export function ProfileInfo() {
       await persistor.purge();
       navigate("/auth");
     } catch (error) {
-      console.error("Logout failed:", error);
+      // console.error("Logout failed:", error);
     }
   };
 
@@ -41,7 +43,7 @@ export function ProfileInfo() {
   return (
     <Popover open={openPopover} handler={setOpenPopover}>
       <PopoverHandler {...triggers}>
-        <div className="hidden lg:flex items-center gap-2 text-black">
+        <div className="lg:flex items-center gap-2 text-black">
           <FaRegUser className="border border-black rounded-full h-6 w-6 p-1" />
           <span className="text-sm flex items-center gap-1">
             Hello, {name || "Guest"} <IoIosArrowDown />
@@ -104,10 +106,36 @@ export function ProfileInfo() {
   );
 }
 
+export function MobileMenu() {
+  const [openPopoverm, setOpenPopoverm] = React.useState(false);
+
+  const triggers = {
+    onMouseEnter: () => setOpenPopoverm(true),
+    onMouseLeave: () => setOpenPopoverm(false),
+  };
+
+  return (
+    <Popover open={openPopoverm} handler={setOpenPopoverm}>
+      <PopoverHandler {...triggers}>
+        <div>
+          {" "}
+          <CiMenuFries className="w-8 h-8 md:hidden" />
+        </div>
+      </PopoverHandler>
+      <PopoverContent
+        {...triggers}
+        className="z-[999] bg-white shadow-lg p-4 rounded-lg"
+      >
+        <SidebarLinks />
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export default function Header() {
   return (
-<div className="bg-white h-[60px] sticky top-0 w-full p-3 pr-5 flex justify-end ">
-
+    <div className="bg-white h-[60px] sticky top-0 w-full p-3 pr-5 flex md:justify-end justify-between ">
+      <MobileMenu />
       <ProfileInfo />
     </div>
   );
