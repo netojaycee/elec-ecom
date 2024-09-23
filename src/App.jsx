@@ -51,10 +51,13 @@ function App() {
         const decodedToken = jwtDecode(token);
 
         // Extract required fields from the decoded token
-        const { name, email, isAdmin, _id, address, phoneNumber } = decodedToken;
+        const { name, email, isAdmin, _id, address, phoneNumber } =
+          decodedToken;
 
         // Dispatch the action to set user info in the state
-        dispatch(setUserInfo({ name, email, isAdmin, _id, address, phoneNumber }));
+        dispatch(
+          setUserInfo({ name, email, isAdmin, _id, address, phoneNumber })
+        );
       } catch (error) {
         // console.error("Token decoding failed:", error);
       }
@@ -70,7 +73,6 @@ function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/contact-us" element={<Contact />} />
           <Route path="/shopping-cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
           <Route path="/all-products/:slug" element={<ProductDetails />} />
           <Route path="/order-confirm" element={<OrderConfirm />} />
           <Route path="/all-products" element={<Products />} />
@@ -84,6 +86,7 @@ function App() {
             <Route path="/my-orders/:slug" element={<OrderDetails />} />
             <Route path="/saved-items" element={<SavedItems />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Route>
 
           <Route path="/error" element={<Error />} />
