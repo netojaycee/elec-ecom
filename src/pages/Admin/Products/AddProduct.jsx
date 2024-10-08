@@ -63,12 +63,17 @@ export default function AddProduct() {
     setErrors("");
 
     const requiredFields = [name, description, category, price, quantity];
-    const hasEmptyField = requiredFields.some(field => !field);
+    const hasEmptyField = requiredFields.some((field) => !field);
     // console.log(requiredFields)
 
-    if (hasEmptyField || images.length !== 4) {
-        toast.error("All fields are required and exactly four images must be uploaded.");
-        return;
+    if (hasEmptyField) {
+      toast.error("All fields are required ");
+      return;
+    }
+
+    if (images.length !== 4) {
+      toast.error("Exactly four images must be uploaded.");
+      return;
     }
 
     setIsLoading(true);
@@ -86,7 +91,7 @@ export default function AddProduct() {
         quantity,
         images: imageUrls, // Send the array of URLs to the backend
       };
-// console.log(productData)
+      // console.log(productData)
       await addProduct(productData);
       setIsLoading(false);
     } catch (error) {
@@ -111,6 +116,12 @@ export default function AddProduct() {
       toast.error("Product upload failed");
     }
   }, [isSuccess, isError]);
+
+  React.useEffect(() => {
+    if (categories.length && !category) {
+      setCategory(categories[0].slug); // Set the first category's slug as the default
+    }
+  }, [categories, category]);
 
   return (
     <>
