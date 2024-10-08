@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { Carousel } from "react-responsive-carousel";
-import productImage from "@/assets/images/product1.png";
 import Slider from "react-slick";
 import PageTitle from "@/components/PageTitle";
 import {
@@ -11,9 +9,10 @@ import {
   TabPanel,
 } from "@material-tailwind/react";
 import { useParams } from "react-router-dom";
-import { useGetAllProductQuery } from "../redux/appData";
+import {
+  useGetAllProductQuery,
+} from "../redux/appData";
 import SimProductCard from "../components/SimProductCard";
-import { BiMinus, BiPlus } from "react-icons/bi";
 import CustomButton from "../components/CustomButton";
 import { addToCart } from "../redux/slices/cartSlice";
 import { useDispatch } from "react-redux";
@@ -23,7 +22,7 @@ export function DetailsTab({ activeTab, setActiveTab, product }) {
     {
       label: "Description",
       value: "description",
-      desc: product.desc,
+      desc: product?.desc,
     },
     // {
     //   label: "Reviews",
@@ -32,6 +31,8 @@ export function DetailsTab({ activeTab, setActiveTab, product }) {
     //   to follow my dreams and inspire other people to follow their dreams, too.`,
     // },
   ];
+
+
   return (
     <Tabs id="custom-animation" value={activeTab}>
       <TabsHeader
@@ -78,9 +79,9 @@ export default function ProductDetails() {
 
   const product =
     products && products?.find((product) => product.slug === slug);
-  const images = product.images;
+  const images = product && product.images;
 
-  const [mainImage, setMainImage] = useState(images[0]);
+  const [mainImage, setMainImage] = useState(images && images[0]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleImageClick = (image, index) => {
@@ -126,7 +127,8 @@ export default function ProductDetails() {
     ],
   };
 
-  const similarProducts = products.filter(
+
+  const similarProducts = products && products.filter(
     (item) =>
       item.category.name === product.category.name && item._id !== product._id // Exclude the current product
   );
@@ -150,7 +152,7 @@ export default function ProductDetails() {
                 />
               </div>
               <div className="flex items-center gap-3 w-full">
-                {images.slice(1, 4).map((image, index) => (
+                {images && images.slice(1, 4).map((image, index) => (
                   <div
                     key={index}
                     className={`bg-white min-h-4 shadow-md p-3 w-1/3 h-[120px] cursor-pointer transition-all duration-300 ease-in-out rounded-md ${
@@ -170,11 +172,11 @@ export default function ProductDetails() {
           </div>
           <div className="flex flex-col gap-3 w-full lg:w-1/2">
             <h1 className="font-semibold text-lg lg:text-2xl">
-              {product.name}
+              {product?.name}
             </h1>
             <p className="font-bold text-2xl">
               <span className="font-serif">&#8358;</span>
-              {product.price}
+              {product?.price}
             </p>
             <p className="font-bold text-xs">
               + shipping from <span className="font-serif">&#8358;</span>450 to
@@ -207,16 +209,19 @@ export default function ProductDetails() {
           />
         </div>
 
-        <div className="">
+        <div className="w-full">
           <PageTitle title="Similar Items" />
 
           <div className="slider-container p-2 mt-5">
             <Slider {...settings}>
-              {similarProducts.map((product) => (
-                <SimProductCard key={product._id} product={product} />
-              ))}
+              {similarProducts &&
+                similarProducts.map((product) => (
+                  <SimProductCard key={product._id} product={product} />
+                ))}
+                
             </Slider>
           </div>
+         
         </div>
       </div>
     </>
