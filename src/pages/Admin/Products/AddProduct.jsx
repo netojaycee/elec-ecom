@@ -43,12 +43,12 @@ export default function AddProduct() {
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "db0zguvf");
+    formData.append("upload_preset", "powermart");
     formData.append("folder", "powermart");
 
     try {
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dgz5bgdzc/auto/upload",
+        "https://api.cloudinary.com/v1_1/da4agfz0x/auto/upload",
         formData
       );
       return response.data.secure_url; // Return the secure URL of the uploaded file
